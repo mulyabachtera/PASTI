@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Tanah {
+  id               String    @id @default(uuid())
+  assetId          String?   // ID Aset format prototipe (contoh: AT-0001, AT-0002)
+  kodeTanah        String?   // Kode Tanah / Kode Barang spesifik (contoh: 1.3.1.01.01.01.001)
+  kodeLokasi       String?
+  kodeBarang       String?
+  nibar            String    @unique
+  namaBarang       String
+  pengelola        String?   // SKPK / Pengguna Barang
+  luas             Float?
+  statusHak        String?
+  noSertifikat     String?
+  nilaiPerolehan   Float?
+  asalPerolehan    String?
+  tanggalPerolehan DateTime?
+  alamatLokasi     String?
+  kampung          String?
+  kecamatan        String?
+  kabKota          String?
+  provinsi         String?
+  statusLegalitas  String?
+  dokumenSertifikat String?
+  fotoAset         String?
+
+  /// Parameter Fisik & Penguasaan Lapangan (Skala Pembobotan 0 - 2)
+  papanAset        Int?      @default(0) // 0: Ada & Terawat, 1: Rusak/Pudar, 2: Tidak Ada
+  batasBidang      Int?      @default(0) // 0: Jelas & Patok BPN, 1: Sebagian Jelas, 2: Belum Jelas
+  pagarPengamanan  Int?      @default(0) // 0: Ada Keliling, 1: Sebagian/Rusak, 2: Tidak Ada
+  statusPenguasaan Int?      @default(0) // 0: Dikuasai Pemda, 1: Potensi Klaim, 2: Dikuasai Pihak Lain
+  pemanfaatan      Int?      @default(0) // 0: Digunakan SKPK, 1: Belum Dimanfaatkan, 2: Dimanfaatkan Pihak Lain
+  permasalahan     String?   // Uraian permasalahan riil lapangan
+
+  /// Hasil Otomasi 6 Dimensi Risiko (Skala 1 - 5 per Dimensi)
+  skorAdministrasi  Int?      @default(1)
+  skorLegal         Int?      @default(1)
+  skorFisik         Int?      @default(1)
+  skorPenguasaan    Int?      @default(1)
+  skorSengketa      Int?      @default(1)
+  skorStrategis     Int?      @default(1)
+  totalSkorRisiko   Int?      @default(6) // Total akumulasi 6 dimensi (Rentang 6 - 30)
+  kategoriRisiko    String?   @default("Rendah") // Rendah, Sedang, Tinggi, Sangat Tinggi
+  prioritasTindakan String?   @default("Monitoring") // Monitoring, Prioritas 1, Prioritas Utama
+
+  /// Koordinat GeoJSON Polygon yang dikonversi menjadi PostGIS geometry
+  koordinatPolygon Unsupported("geometry(Polygon, 4326)")?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  risiko RiskRegister[]
+
+  @@map("tanah")
+}
+
+model RiskRegister {
+  id                 String    @id @default(uuid())
+  idTanah            String
+  riskId             String?   // ID Risiko format prototipe (contoh: R-001)
+  kategoriRisiko     String
+  deskripsiRisiko    String
+  penyebab           String?   // Akar penyebab risiko (Root cause)
+  dampakNarasi       String?   // Uraian konsekuensi dampak kualitatif
+  existingControl    String?   // Pengendalian yang ada saat ini (Existing Control)
+  statusTindakLanjut String?   @default("Dalam Proses") // Selesai, Dalam Proses, Belum Ditindaklanjuti
+  pic                String?   // Penanggung Jawab (contoh: Pengurus Barang, Bidang BMD)
+  targetSelesai      DateTime? // Target batas waktu penyelesaian
+  skorDampak         Int
+  skorPeluang        Int
+  skorTotal          Int
+  tingkatRisiko      String
+
+  /// Titik lokasi spesifik risiko menggunakan PostGIS
+  koordinatTitik Unsupported("geometry(Point, 4326)")?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tanah    Tanah        @relation(fields: [idTanah], references: [id], onDelete: Cascade)
+  mitigasi ActionPlan[]
+
+  @@map("risk_register")
+}
+
+model ActionPlan {
+  id              String    @id @default(uuid())
+  idRisiko        String
+  rencanaMitigasi String
+  pic             String
+  targetSelesai   DateTime?
+  biayaEstimasi   Float?
+  statusAksi      String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  risiko RiskRegister @relation(fields: [idRisiko], references: [id], onDelete: Cascade)
+
+  @@map("action_plan")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN_PEMERINTAH
+  VENDOR_SWASTA
+}
+
+model User {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+  name     String
+  role     Role   @default(VENDOR_SWASTA)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
