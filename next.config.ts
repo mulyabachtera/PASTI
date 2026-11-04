@@ -33,6 +33,16 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   /* config options here */
+  allowedDevOrigins: [
+    '*.trycloudflare.com',
+    '*.localtunnel.me',
+    '192.168.100.39',
+    '192.168.100.39:3000',
+    '192.168.110.95',
+    '192.168.110.95:3000',
+    '10.234.253.48',
+    '10.234.253.48:3000',
+  ],
   async headers() {
     return [
       {
@@ -48,6 +58,9 @@ const nextConfig: NextConfig = {
         as: "*.css",
       },
     },
+  },
+  experimental: {
+    agentUpgrade: "security",
   },
 };
 

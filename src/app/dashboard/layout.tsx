@@ -2,11 +2,10 @@
 
 import React, { Suspense, useState, useEffect } from 'react';
 import { useSession, signOut } from "next-auth/react";
-import { redirect, usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { 
   LayoutDashboard, 
-  Map, 
   FileSpreadsheet, 
   ShieldAlert, 
   LogOut, 
@@ -14,16 +13,31 @@ import {
   Menu, 
   ChevronLeft, 
   ChevronRight, 
-  X
+  X,
+  Users
 } from "lucide-react";
+
+import { DEMO_MODE } from '@/lib/demoConfig';
 
 function SidebarNav({ isCollapsed }: { isCollapsed: boolean }) {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const role = (session?.user as any)?.role;
+
   const navItems = [
-    { name: "Dashboard Spasial", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Master Tanah", href: "/dashboard/tanah", icon: FileSpreadsheet },
-    { name: "Risk Register", href: "/dashboard/risk", icon: ShieldAlert },
+    { name: "Dashboard Spasial", href: "/dashboard", icon: LayoutDashboard, badge: null },
+    { name: "Master Tanah", href: "/dashboard/tanah", icon: FileSpreadsheet, badge: DEMO_MODE ? "Fase 2" : null },
+    { name: "Risk Register", href: "/dashboard/risk", icon: ShieldAlert, badge: DEMO_MODE ? "Fase 2" : null },
   ];
+
+  if (role === "SUPER_ADMIN") {
+    navItems.push({
+      name: "Kelola Pengguna",
+      href: "/dashboard/users",
+      icon: Users,
+      badge: null,
+    });
+  }
 
   return (
     <>
@@ -33,7 +47,7 @@ function SidebarNav({ isCollapsed }: { isCollapsed: boolean }) {
           <Link 
             key={item.href}
             href={item.href} 
-            title={isCollapsed ? item.name : undefined}
+            title={isCollapsed ? `${item.name}${item.badge ? ` (${item.badge})` : ''}` : undefined}
             className={`flex items-center ${
               isCollapsed ? "justify-center px-0 py-3" : "gap-3 px-4 py-3"
             } rounded-xl font-medium transition-all group relative ${
@@ -45,15 +59,27 @@ function SidebarNav({ isCollapsed }: { isCollapsed: boolean }) {
             <item.icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-blue-400" : "text-slate-400 group-hover:text-white"}`} />
             
             {!isCollapsed && (
-              <span className="whitespace-nowrap transition-opacity duration-200 text-sm">
-                {item.name}
-              </span>
+              <div className="flex items-center justify-between flex-1 min-w-0 pr-0.5">
+                <span className="whitespace-nowrap transition-opacity duration-200 text-sm truncate">
+                  {item.name}
+                </span>
+                {item.badge && (
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30 uppercase tracking-wider shrink-0 ml-2">
+                    {item.badge}
+                  </span>
+                )}
+              </div>
             )}
 
             {/* Floating Tooltip saat menu dikecilkan */}
             {isCollapsed && (
-              <span className="absolute left-full ml-3 px-3 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-lg shadow-xl border border-slate-700 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
-                {item.name}
+              <span className="absolute left-full ml-3 px-3 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-lg shadow-xl border border-slate-700 hidden group-hover:flex pointer-events-none whitespace-nowrap z-50 items-center gap-2">
+                <span>{item.name}</span>
+                {item.badge && (
+                  <span className="text-[9px] font-bold px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    {item.badge}
+                  </span>
+                )}
               </span>
             )}
           </Link>
@@ -64,10 +90,11 @@ function SidebarNav({ isCollapsed }: { isCollapsed: boolean }) {
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
-      redirect("/login");
+      router.push("/login");
     }
   });
 
@@ -79,9 +106,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     try {
       const saved = localStorage.getItem("sim_pasti_sidebar_collapsed");
       if (saved !== null) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsCollapsed(saved === "true");
       }
-    } catch (e) {}
+    } catch {}
   }, []);
 
   const toggleSidebar = () => {
@@ -89,7 +117,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       const next = !prev;
       try {
         localStorage.setItem("sim_pasti_sidebar_collapsed", String(next));
-      } catch (e) {}
+      } catch {}
       return next;
     });
   };
@@ -104,6 +132,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const roleLabels: Record<string, string> = {
     SUPER_ADMIN: "👑 Super Admin",
+    VERIFICATOR: "🛡️ Verifikator",
+    OPERATOR: "✏️ Operator",
     ADMIN_PEMERINTAH: "🏢 Admin Instansi",
     VENDOR_SWASTA: "🏗️ Vendor Mitra",
   };
@@ -142,34 +172,34 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className={`h-20 flex items-center border-b border-slate-800/60 bg-slate-900/40 transition-all duration-300 ${
           isCollapsed ? "justify-center px-2" : "justify-between px-6"
         }`}>
-          <div 
-            className={`flex items-center min-w-0 ${isCollapsed ? "cursor-pointer" : ""}`}
-            onClick={isCollapsed ? toggleSidebar : undefined}
-            title={isCollapsed ? "Klik untuk memperbesar panel" : undefined}
+          <Link 
+            href="/dashboard"
+            className="flex items-center min-w-0 cursor-pointer group/brand"
+            title="Kembali ke Dashboard Utama"
           >
             <div className="relative group/logo flex items-center justify-center">
               <img 
                 src="/pasti-logo.png" 
                 alt="Logo PASTI" 
-                className={`${isCollapsed ? "w-11 h-11" : "w-11 h-11"} rounded-full object-contain p-0.5 bg-slate-800/80 border border-emerald-500/30 shadow-lg shadow-emerald-500/10 flex-shrink-0 transition-transform hover:scale-105`} 
+                className={`${isCollapsed ? "w-11 h-11" : "w-11 h-11"} rounded-full object-contain p-0.5 bg-slate-800/80 border border-emerald-500/30 shadow-lg shadow-emerald-500/10 flex-shrink-0 transition-transform group-hover/brand:scale-105`} 
               />
             </div>
 
             {/* Nama & Subtitle: Hanya ditampilkan saat BESAR (tidak collapsed) */}
             {!isCollapsed && (
               <div className="ml-3 min-w-0 overflow-hidden whitespace-nowrap animate-in fade-in duration-200">
-                <h1 className="text-xl font-bold tracking-tight text-white leading-tight">
+                <h1 className="text-xl font-bold tracking-tight text-white group-hover/brand:text-blue-300 transition-colors leading-tight">
                   SIM <span className="text-blue-400">PASTI</span>
                 </h1>
                 <p className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Executive System</p>
               </div>
             )}
-          </div>
+          </Link>
         </div>
         
         {/* Menu Items */}
-        <div className={`flex-1 flex flex-col gap-2 overflow-y-auto py-6 transition-all duration-300 ${
-          isCollapsed ? "px-2.5 items-center" : "px-5"
+        <div className={`flex-1 flex flex-col gap-2 py-6 transition-all duration-300 ${
+          isCollapsed ? "px-2.5 items-center overflow-visible" : "px-5 overflow-y-auto overflow-x-hidden"
         }`}>
           {!isCollapsed ? (
             <p className="text-[11px] font-bold text-slate-500 mb-2 uppercase tracking-wider px-2">
@@ -214,7 +244,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 title={`${session?.user?.name || "Pengguna"} (${roleLabels[(session?.user as any)?.role] || "Pengguna"})`}
               >
                 {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "U"}
-                <span className="absolute left-full ml-3 px-2.5 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-lg shadow-xl border border-slate-700 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                <span className="absolute left-full ml-3 px-2.5 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-lg shadow-xl border border-slate-700 hidden group-hover:block pointer-events-none whitespace-nowrap z-50">
                   {session?.user?.name}
                 </span>
               </div>
@@ -224,7 +254,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 title="Keluar / Sign Out"
               >
                 <LogOut className="w-4 h-4" />
-                <span className="absolute left-full ml-3 px-2.5 py-1.5 bg-slate-900 text-rose-300 text-xs font-semibold rounded-lg shadow-xl border border-slate-700 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+                <span className="absolute left-full ml-3 px-2.5 py-1.5 bg-slate-900 text-rose-300 text-xs font-semibold rounded-lg shadow-xl border border-slate-700 hidden group-hover:block pointer-events-none whitespace-nowrap z-50">
                   Keluar
                 </span>
               </button>
@@ -240,7 +270,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }`}
       >
         <div className="h-20 flex items-center justify-between px-6 border-b border-slate-800/60 bg-slate-900/40">
-          <div className="flex items-center min-w-0">
+          <Link
+            href="/dashboard"
+            onClick={() => setIsMobileOpen(false)}
+            className="flex items-center min-w-0 cursor-pointer"
+            title="Kembali ke Dashboard Utama"
+          >
             <img 
               src="/pasti-logo.png" 
               alt="Logo PASTI" 
@@ -252,7 +287,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </h1>
               <p className="text-[10px] text-slate-400 font-medium">Executive System</p>
             </div>
-          </div>
+          </Link>
           <button 
             onClick={() => setIsMobileOpen(false)}
             className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
@@ -294,14 +329,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-2.5">
+          <Link href="/dashboard" className="flex items-center gap-2.5 cursor-pointer" title="Kembali ke Dashboard Utama">
             <img 
               src="/pasti-logo.png" 
               alt="Logo PASTI" 
               className="w-8 h-8 rounded-full object-contain shadow-xs border border-emerald-500/20" 
             />
             <span className="font-bold text-slate-800 text-sm">SIM PASTI</span>
-          </div>
+          </Link>
           <div className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-[10px] font-semibold flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             Aktif

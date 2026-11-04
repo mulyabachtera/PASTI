@@ -53,6 +53,13 @@ model Tanah {
   /// Koordinat GeoJSON Polygon yang dikonversi menjadi PostGIS geometry
   koordinatPolygon Unsupported("geometry(Polygon, 4326)")?
 
+  /// Status Verifikasi Data (Oleh Verifikator terhadap input Operator)
+  statusVerifikasi  String?   @default("TERVERIFIKASI") // MENUNGGU_VERIFIKASI, TERVERIFIKASI, DITOLAK
+  catatanVerifikasi String?
+  verifiedBy        String?
+  verifiedAt        DateTime?
+  inputBy           String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -111,6 +118,8 @@ enum Role {
   SUPER_ADMIN
   ADMIN_PEMERINTAH
   VENDOR_SWASTA
+  VERIFICATOR
+  OPERATOR
 }
 
 model User {
@@ -118,7 +127,7 @@ model User {
   email    String @unique
   password String
   name     String
-  role     Role   @default(VENDOR_SWASTA)
+  role     Role   @default(OPERATOR)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

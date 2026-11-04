@@ -19,8 +19,13 @@ export async function GET() {
 
     // CSV Header with BOM for Excel compatibility
     const headers = [
+      'Asset ID',
       'NIBAR',
+      'Kode Tanah',
       'Nama Aset / Barang',
+      'Pengelola (OPD)',
+      'Kecamatan',
+      'Kampung / Desa',
       'Kode Lokasi',
       'Status Hak',
       'Luas (m2)',
@@ -30,20 +35,31 @@ export async function GET() {
       'Asal Perolehan',
       'Nilai Perolehan (Rp)',
       'Tanggal Perolehan',
+      'Status Verifikasi',
+      'Diinput Oleh',
+      'Diverifikasi Oleh',
+      'Total Skor Risiko (6-30)',
+      'Kategori Risiko',
+      'Prioritas Tindakan',
       'Dokumen Sertifikat',
       'Foto Fisik Aset',
       'Tanggal Terdaftar',
     ];
 
-    const escapeCSV = (field: any) => {
+    const escapeCSV = (field: unknown) => {
       if (field === null || field === undefined) return '""';
       const str = String(field).replace(/"/g, '""');
       return `"${str}"`;
     };
 
     const rows = assets.map((a) => [
+      escapeCSV(a.assetId || '-'),
       escapeCSV(a.nibar),
+      escapeCSV(a.kodeTanah || '-'),
       escapeCSV(a.namaBarang),
+      escapeCSV(a.pengelola || '-'),
+      escapeCSV(a.kecamatan || '-'),
+      escapeCSV(a.kampung || '-'),
       escapeCSV(a.kodeLokasi || '-'),
       escapeCSV(a.statusHak || '-'),
       escapeCSV(a.luas || 0),
@@ -53,6 +69,12 @@ export async function GET() {
       escapeCSV(a.asalPerolehan || '-'),
       escapeCSV(a.nilaiPerolehan || 0),
       escapeCSV(a.tanggalPerolehan ? new Date(a.tanggalPerolehan).toISOString().split('T')[0] : '-'),
+      escapeCSV(a.statusVerifikasi || 'TERVERIFIKASI'),
+      escapeCSV(a.inputBy || '-'),
+      escapeCSV(a.verifiedBy || '-'),
+      escapeCSV(a.totalSkorRisiko || '-'),
+      escapeCSV(a.kategoriRisiko || '-'),
+      escapeCSV(a.prioritasTindakan || '-'),
       escapeCSV(a.dokumenSertifikat ? `${process.env.NEXTAUTH_URL || ''}${a.dokumenSertifikat}` : '-'),
       escapeCSV(a.fotoAset ? `${process.env.NEXTAUTH_URL || ''}${a.fotoAset}` : '-'),
       escapeCSV(a.createdAt ? new Date(a.createdAt).toISOString().split('T')[0] : '-'),

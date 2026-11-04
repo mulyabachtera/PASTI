@@ -84,6 +84,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       ...riskScores,
     };
 
+    // Jika yang mengedit adalah Operator, kembalikan status menjadi MENUNGGU_VERIFIKASI untuk ditelaah ulang Verifikator
+    const userRole = (session.user as any)?.role;
+    const userName = session.user?.name || session.user?.email || 'Operator';
+    if (userRole === 'OPERATOR') {
+      updateData.statusVerifikasi = 'MENUNGGU_VERIFIKASI';
+      updateData.inputBy = userName;
+    }
+
     const updated = await prisma.tanah.update({
       where: { id },
       data: updateData

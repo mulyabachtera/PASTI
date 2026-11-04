@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { Loader2, ShieldCheck, Clock, AlertTriangle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { getCertificatePolygonStyle } from "@/lib/geoUtils";
 
 // Fix for default marker icons in Next.js
@@ -60,7 +60,7 @@ export default function MapComponent() {
     const defaultCenter: L.LatLngTuple = [4.625, 96.842];
     
     // Parse GeoJSON and calculate bounds
-    let allLatLngs: L.LatLngTuple[] = [];
+    const allLatLngs: L.LatLngTuple[] = [];
     const tanahPolygons: any[] = [];
     const riskPoints: any[] = [];
 

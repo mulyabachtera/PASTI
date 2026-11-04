@@ -16,15 +16,16 @@ L.Icon.Default.mergeOptions({
 
 if (typeof window !== "undefined") {
   (window as any).L = L;
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   require("@geoman-io/leaflet-geoman-free");
 }
 
-export default function FormMapComponent({ 
+export default function FormMapComponent({
   onPolygonDrawn,
   initialGeojson,
   statusLegalitas,
   noSertifikat
-}: { 
+}: {
   onPolygonDrawn: (geojson: any) => void,
   initialGeojson?: any,
   statusLegalitas?: string | null,
@@ -177,11 +178,11 @@ export default function FormMapComponent({
         const parsed = typeof initialGeojson === 'string' ? JSON.parse(initialGeojson) : initialGeojson;
         if (parsed && parsed.coordinates && parsed.coordinates[0] && parsed.coordinates[0].length >= 3) {
           const geoLayer = L.geoJSON(parsed, {
-            style: { 
-              color: certStyle.color, 
-              fillColor: certStyle.fillColor, 
-              fillOpacity: certStyle.fillOpacity, 
-              weight: certStyle.weight 
+            style: {
+              color: certStyle.color,
+              fillColor: certStyle.fillColor,
+              fillOpacity: certStyle.fillOpacity,
+              weight: certStyle.weight
             }
           }).addTo(map);
 
@@ -218,10 +219,10 @@ export default function FormMapComponent({
   return (
     <div className="w-full h-96 relative rounded-2xl overflow-hidden shadow-sm border border-slate-200 z-10">
       <div ref={mapRef} className="w-full h-full" />
-      <div className="absolute top-4 right-4 z-[400] pointer-events-none flex items-center gap-2">
+      <div className="absolute top-2.5 left-13 z-[400] pointer-events-none flex items-center gap-2">
         <span className={`px-3 py-1 bg-white/95 backdrop-blur border rounded-lg text-xs font-bold shadow-sm flex items-center gap-1.5 ${certStyle.badgeClass}`}>
-          <span 
-            className="w-2.5 h-2.5 rounded-full" 
+          <span
+            className="w-2.5 h-2.5 rounded-full"
             style={{ backgroundColor: certStyle.color }}
           />
           Poligon: {certStyle.label}

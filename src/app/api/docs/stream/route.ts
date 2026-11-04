@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
     } else {
       // 3. Proteksi Path Traversal Menyeluruh untuk Dokumen Lokal
       const publicDir = path.resolve(process.cwd(), "public");
-      let clean = target.startsWith("/") ? target.slice(1) : target;
+      const clean = target.startsWith("/") ? target.slice(1) : target;
       const fullPath = path.resolve(publicDir, clean);
 
       // Verifikasi bahwa jalur fisik file berada di dalam folder public/

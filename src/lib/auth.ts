@@ -45,13 +45,15 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role as string;
+        token.id = user.id;
+        token.role = (user as { role?: string }).role as string;
       }
       return token;
     },
     async session({ session, token }) {
       if (session?.user) {
-        (session.user as any).role = token.role as string;
+        (session.user as { id?: string; role?: string }).id = (token.id || token.sub) as string;
+        (session.user as { id?: string; role?: string }).role = token.role as string;
       }
       return session;
     }
@@ -61,6 +63,34 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: "jwt",
+  },
+  cookies: {
+    sessionToken: {
+      name: "next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: false,
+      },
+    },
+    callbackUrl: {
+      name: "next-auth.callback-url",
+      options: {
+        sameSite: "lax",
+        path: "/",
+        secure: false,
+      },
+    },
+    csrfToken: {
+      name: "next-auth.csrf-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: false,
+      },
+    },
   },
   secret: process.env.NEXTAUTH_SECRET || "sim-pasti-super-secret-key-2026",
 };

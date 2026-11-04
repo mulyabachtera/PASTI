@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { ArrowUpRight } from "lucide-react";
 
 export interface DonutSlice {
   label: string;
   value: number;
   color: string; // HEX color for SVG stroke
   badgeColor?: string; // Tailwind class
+  href?: string; // Link tujuan drill-down saat slice/legenda diklik
 }
 
 interface DonutChartProps {
@@ -23,6 +26,7 @@ export default function DonutChart({
   data,
   centerLabel = "Total Bidang"
 }: DonutChartProps) {
+  const router = useRouter();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const total = data.reduce((acc, curr) => acc + curr.value, 0);
@@ -34,6 +38,12 @@ export default function DonutChart({
   let accumulatedPercent = 0;
 
   const activeSlice = hoveredIndex !== null ? data[hoveredIndex] : null;
+
+  const handleSliceClick = (slice: DonutSlice) => {
+    if (slice.href) {
+      router.push(slice.href);
+    }
+  };
 
   return (
     <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
@@ -83,11 +93,14 @@ export default function DonutChart({
                     className="transition-all duration-300 cursor-pointer"
                     onMouseEnter={() => setHoveredIndex(i)}
                     onMouseLeave={() => setHoveredIndex(null)}
+                    onClick={() => handleSliceClick(slice)}
                     style={{
                       transformOrigin: "center",
                       filter: isHovered ? "drop-shadow(0 4px 6px rgba(0,0,0,0.15))" : "none"
                     }}
-                  />
+                  >
+                    <title>{`${slice.label}: ${slice.value} Bidang (${Math.round(percent * 100)}%) — Klik untuk melihat data sumber`}</title>
+                  </circle>
                 );
               })}
           </svg>
@@ -100,9 +113,9 @@ export default function DonutChart({
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.15 }}
-                className="px-2"
+                className="px-2 flex flex-col items-center"
               >
-                <p className="text-xs font-bold text-slate-500 truncate max-w-[110px]">
+                <p className="text-xs font-bold text-slate-500 truncate max-w-[115px]">
                   {activeSlice.label}
                 </p>
                 <p className="text-xl font-extrabold text-slate-900 mt-0.5">
@@ -111,6 +124,11 @@ export default function DonutChart({
                 <p className="text-[11px] font-medium text-slate-400">
                   {activeSlice.value} Bidang
                 </p>
+                {activeSlice.href && (
+                  <span className="text-[9px] font-bold text-blue-600 mt-0.5 flex items-center gap-0.5">
+                    Klik lihat data <ArrowUpRight className="w-2.5 h-2.5" />
+                  </span>
+                )}
               </motion.div>
             ) : (
               <div>
@@ -135,8 +153,10 @@ export default function DonutChart({
               key={i}
               onMouseEnter={() => setHoveredIndex(i)}
               onMouseLeave={() => setHoveredIndex(null)}
-              className={`flex items-center justify-between p-2 rounded-xl text-xs transition-colors cursor-pointer ${
-                isHovered ? "bg-slate-50 font-bold" : "hover:bg-slate-50/70"
+              onClick={() => handleSliceClick(item)}
+              title={item.href ? `Klik untuk melihat daftar aset: ${item.label}` : item.label}
+              className={`flex items-center justify-between p-2 rounded-xl text-xs transition-colors cursor-pointer group ${
+                isHovered ? "bg-blue-50/70 font-bold" : "hover:bg-slate-50/70"
               }`}
             >
               <div className="flex items-center gap-2.5 truncate">
@@ -147,8 +167,11 @@ export default function DonutChart({
                     transform: isHovered ? "scale(1.25)" : "scale(1)"
                   }}
                 />
-                <span className={`truncate ${isHovered ? "text-slate-900" : "text-slate-600"}`}>
+                <span className={`truncate flex items-center gap-1 ${isHovered ? "text-blue-700" : "text-slate-600"}`}>
                   {item.label}
+                  {item.href && (
+                    <ArrowUpRight className={`w-3 h-3 transition-opacity ${isHovered ? "opacity-100 text-blue-600" : "opacity-0 group-hover:opacity-60"}`} />
+                  )}
                 </span>
               </div>
               <div className="flex items-center gap-3 flex-shrink-0">

@@ -55,6 +55,15 @@ export async function POST(request: Request) {
       nilaiPerolehan: nilaiPerolehan || 0,
     });
 
+    // Parameter Verifikasi Sesuai Peran Penginput
+    const userRole = (session.user as any)?.role;
+    const userName = session.user?.name || session.user?.email || 'Pengguna';
+    const isOperator = userRole === 'OPERATOR';
+    const statusVerifikasi = isOperator ? 'MENUNGGU_VERIFIKASI' : 'TERVERIFIKASI';
+    const inputBy = userName;
+    const verifiedBy = isOperator ? null : userName;
+    const verifiedAt = isOperator ? null : new Date();
+
     if (data.geojson) {
       // With Map Polygon
       const geojsonString = typeof data.geojson === 'string' ? data.geojson : JSON.stringify(data.geojson);
@@ -67,6 +76,7 @@ export async function POST(request: Request) {
           "papanAset", "batasBidang", "pagarPengamanan", "statusPenguasaan", "pemanfaatan", "permasalahan",
           "skorAdministrasi", "skorLegal", "skorFisik", "skorPenguasaan", "skorSengketa", "skorStrategis",
           "totalSkorRisiko", "kategoriRisiko", "prioritasTindakan",
+          "statusVerifikasi", "inputBy", "verifiedBy", "verifiedAt",
           "createdAt", "updatedAt", "koordinatPolygon"
         )
         VALUES (
@@ -77,6 +87,7 @@ export async function POST(request: Request) {
           ${papanAset}, ${batasBidang}, ${pagarPengamanan}, ${statusPenguasaan}, ${pemanfaatan}, ${permasalahan},
           ${risk.skorAdministrasi}, ${risk.skorLegal}, ${risk.skorFisik}, ${risk.skorPenguasaan}, ${risk.skorSengketa}, ${risk.skorStrategis},
           ${risk.totalSkor}, ${risk.kategoriRisiko}, ${risk.prioritasTindakan},
+          ${statusVerifikasi}, ${inputBy}, ${verifiedBy}, ${verifiedAt},
           NOW(), NOW(), ST_GeomFromGeoJSON(${geojsonString})
         )
       `;
@@ -119,6 +130,10 @@ export async function POST(request: Request) {
           totalSkorRisiko: risk.totalSkor,
           kategoriRisiko: risk.kategoriRisiko,
           prioritasTindakan: risk.prioritasTindakan,
+          statusVerifikasi,
+          inputBy,
+          verifiedBy,
+          verifiedAt,
         }
       });
     }

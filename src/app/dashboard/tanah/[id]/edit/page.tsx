@@ -1,9 +1,14 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import EditTanahForm from "./EditTanahForm";
-
+import { FORMS_UNDER_DEVELOPMENT } from "@/lib/demoConfig";
+import FasePlaceholder from "@/components/dashboard/FasePlaceholder";
 
 export default async function EditTanahPage({ params }: { params: Promise<{ id: string }> }) {
+  if (FORMS_UNDER_DEVELOPMENT) {
+    return <FasePlaceholder type="form-tanah" />;
+  }
+
   const resolvedParams = await params;
   const id = resolvedParams.id;
 

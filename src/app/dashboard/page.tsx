@@ -257,16 +257,16 @@ export default async function DashboardPage() {
       totalNilai={totalNilai}
       totalRisiko={riskList.length}
       legalitasData={[
-        { label: "Sudah Bersertifikat", value: legalitasMap["Sudah Bersertifikat"], color: "#10B981" },
-        { label: "Dalam Proses BPN", value: legalitasMap["Dalam Proses BPN"], color: "#F59E0B" },
-        { label: "Belum Bersertifikat", value: legalitasMap["Belum Bersertifikat"], color: "#EF4444" },
-        { label: "Sengketa / Klaim", value: legalitasMap["Sengketa / Klaim"], color: "#DC2626" },
+        { label: "Sudah Bersertifikat", value: legalitasMap["Sudah Bersertifikat"], color: "#10B981", href: "/dashboard/tanah?legalitas=Sudah+Bersertifikat" },
+        { label: "Dalam Proses BPN", value: legalitasMap["Dalam Proses BPN"], color: "#F59E0B", href: "/dashboard/tanah?legalitas=Dalam+Proses+BPN" },
+        { label: "Belum Bersertifikat", value: legalitasMap["Belum Bersertifikat"], color: "#EF4444", href: "/dashboard/tanah?legalitas=Belum+Bersertifikat" },
+        { label: "Sengketa / Klaim", value: legalitasMap["Sengketa / Klaim"], color: "#DC2626", href: "/dashboard/tanah?legalitas=Sengketa" },
       ]}
       hakData={[
-        { label: "Hak Pakai", value: hakMap["Hak Pakai"], color: "#6366F1" },
-        { label: "Hak Pengelolaan", value: hakMap["Hak Pengelolaan"], color: "#06B6D4" },
-        { label: "Hak Milik", value: hakMap["Hak Milik"], color: "#8B5CF6" },
-        { label: "Belum / Lainnya", value: hakMap["Lainnya"], color: "#94A3B8" },
+        { label: "Hak Pakai", value: hakMap["Hak Pakai"], color: "#6366F1", href: "/dashboard/tanah?hak=Hak+Pakai" },
+        { label: "Hak Pengelolaan", value: hakMap["Hak Pengelolaan"], color: "#06B6D4", href: "/dashboard/tanah?hak=Hak+Pengelolaan" },
+        { label: "Hak Milik", value: hakMap["Hak Milik"], color: "#8B5CF6", href: "/dashboard/tanah?hak=Hak+Milik" },
+        { label: "Belum / Lainnya", value: hakMap["Lainnya"], color: "#94A3B8", href: "/dashboard/tanah?hak=Lainnya" },
       ]}
       riskLevels={riskLevels}
       sixDimensions={sixDimensions}

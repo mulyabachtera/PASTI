@@ -1,17 +1,24 @@
 import prisma from '@/lib/prisma';
 import { 
   ArrowLeft, MapPin, FileText, CheckCircle2, Calendar, 
-  Edit3, Map, ShieldCheck, ShieldAlert, AlertTriangle, 
-  AlertCircle, Activity, Building2, Layers
+  Edit3, Map, ShieldCheck, AlertTriangle, 
+  Activity, Building2
 } from 'lucide-react';
 import Link from 'next/link';
 import MiniMapWrapper from './MiniMapWrapper';
 import DocumentUpload from './DocumentUpload';
 import PrintAssetButton from './PrintAssetButton';
+import VerificationBox from './VerificationBox';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { notFound } from 'next/navigation';
-
+import { FORMS_UNDER_DEVELOPMENT } from '@/lib/demoConfig';
 
 export default async function DetailTanahPage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await getServerSession(authOptions);
+  const userRole = (session?.user as any)?.role;
+  const userName = session?.user?.name || session?.user?.email;
+
   const resolvedParams = await params;
   const id = resolvedParams.id;
 
@@ -24,6 +31,7 @@ export default async function DetailTanahPage({ params }: { params: Promise<{ id
       "papanAset", "batasBidang", "pagarPengamanan", "statusPenguasaan", "pemanfaatan", "permasalahan",
       "skorAdministrasi", "skorLegal", "skorFisik", "skorPenguasaan", "skorSengketa", "skorStrategis",
       "totalSkorRisiko", "kategoriRisiko", "prioritasTindakan",
+      "statusVerifikasi", "catatanVerifikasi", "verifiedBy", "verifiedAt", "inputBy",
       ST_AsGeoJSON("koordinatPolygon") as geojson
     FROM "tanah"
     WHERE id = ${id}
@@ -148,6 +156,21 @@ export default async function DetailTanahPage({ params }: { params: Promise<{ id
         <div className="print:hidden">
           <PrintAssetButton namaAset={tanah.namaBarang} />
         </div>
+      </div>
+
+      {/* Verification Box - Alur Verifikator & Operator */}
+      <div className="print:hidden">
+        <VerificationBox
+          tanahId={tanah.id}
+          namaBarang={tanah.namaBarang}
+          statusVerifikasi={tanah.statusVerifikasi}
+          catatanVerifikasi={tanah.catatanVerifikasi}
+          verifiedBy={tanah.verifiedBy}
+          verifiedAt={tanah.verifiedAt}
+          inputBy={tanah.inputBy}
+          userRole={userRole}
+          userName={userName}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -430,15 +453,17 @@ export default async function DetailTanahPage({ params }: { params: Promise<{ id
             <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
               Aksi Manajemen Aset
             </h4>
-            <Link 
-              href={`/dashboard/tanah/${tanah.id}/edit`} 
-              className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs"
-            >
-              <Edit3 className="w-4 h-4" /> Edit Informasi & Parameter
-            </Link>
+            {!FORMS_UNDER_DEVELOPMENT && (
+              <Link 
+                href={`/dashboard/tanah/${tanah.id}/edit`} 
+                className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs"
+              >
+                <Edit3 className="w-4 h-4" /> Edit Informasi & Parameter
+              </Link>
+            )}
             <Link 
               href="/dashboard" 
-              className="w-full py-2.5 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
+              className="w-full py-2.5 px-4 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 transition-colors"
             >
               <Map className="w-4 h-4 text-blue-600" /> Buka Dashboard Spasial
             </Link>

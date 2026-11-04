@@ -3,12 +3,10 @@
 import { useMemo } from "react";
 import { 
   calculateAutomatedRisk, 
-  PhysicalRiskInput, 
   RiskCalculationResult 
 } from "@/lib/riskCalculator";
 import { 
   ShieldAlert, 
-  ShieldCheck, 
   Activity, 
   AlertTriangle, 
   Info,

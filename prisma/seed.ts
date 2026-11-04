@@ -44,6 +44,30 @@ async function main() {
     },
   });
 
+  // 4. Verifikator
+  await prisma.user.upsert({
+    where: { email: 'verifikator@pasti.go.id' },
+    update: {},
+    create: {
+      email: 'verifikator@pasti.go.id',
+      password,
+      name: 'Verifikator BPKAD',
+      role: Role.VERIFICATOR,
+    },
+  });
+
+  // 5. Operator
+  await prisma.user.upsert({
+    where: { email: 'operator@pasti.go.id' },
+    update: {},
+    create: {
+      email: 'operator@pasti.go.id',
+      password,
+      name: 'Operator BMD',
+      role: Role.OPERATOR,
+    },
+  });
+
   // 4. Mock Data Tanah (PostGIS)
   const idTanah1 = 'LND-AT-01';
   const idTanah2 = 'LND-AT-02';

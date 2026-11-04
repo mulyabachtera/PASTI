@@ -1,10 +1,24 @@
 import prisma from '@/lib/prisma';
-import { AlertTriangle, Plus, Search, FileText, MapPin, ShieldCheck, Clock, User } from 'lucide-react';
+import { AlertTriangle, Plus, FileText, User } from 'lucide-react';
 import Link from 'next/link';
+import { DEMO_MODE } from '@/lib/demoConfig';
+import FasePlaceholder from '@/components/dashboard/FasePlaceholder';
+import TableSearchInput from '@/components/dashboard/TableSearchInput';
+import RiskActionMenu from './RiskActionMenu';
 
+export default async function RiskRegisterPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  if (DEMO_MODE) {
+    return <FasePlaceholder type="risk" />;
+  }
 
-export default async function RiskRegisterPage() {
-  const riskList = await prisma.riskRegister.findMany({
+  const resolvedSearchParams = await searchParams;
+  const searchQuery = (resolvedSearchParams?.q || '').trim().toLowerCase();
+
+  const allRiskList = await prisma.riskRegister.findMany({
     include: {
       tanah: {
         select: {
@@ -18,6 +32,26 @@ export default async function RiskRegisterPage() {
     },
     orderBy: { createdAt: 'desc' }
   });
+
+  const riskList = searchQuery
+    ? allRiskList.filter((r) =>
+        [
+          r.riskId,
+          r.kategoriRisiko,
+          r.deskripsiRisiko,
+          r.penyebab,
+          r.tingkatRisiko,
+          r.statusTindakLanjut,
+          r.pic,
+          r.tanah?.assetId,
+          r.tanah?.nibar,
+          r.tanah?.namaBarang,
+          r.tanah?.alamatLokasi,
+        ]
+          .filter(Boolean)
+          .some((field) => String(field).toLowerCase().includes(searchQuery))
+      )
+    : allRiskList;
 
   const getRiskColor = (tingkat: string) => {
     switch (tingkat.toUpperCase()) {
@@ -51,14 +85,11 @@ export default async function RiskRegisterPage() {
 
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-center bg-slate-50/50">
-          <div className="relative w-full sm:w-96">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input 
-              type="text" 
-              placeholder="Cari Risk ID, Aset, atau Deskripsi..." 
-              className="w-full pl-9 pr-4 py-2 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent text-sm bg-white"
-            />
-          </div>
+          <TableSearchInput
+            placeholder="Cari Risk ID, Aset, atau Deskripsi..."
+            initialValue={resolvedSearchParams?.q || ''}
+            accentColor="rose"
+          />
           <div className="flex gap-2 w-full sm:w-auto">
             <a 
               href="/api/export/risk"
@@ -80,12 +111,13 @@ export default async function RiskRegisterPage() {
                 <th className="px-5 py-3.5">Penyebab / Akar Masalah</th>
                 <th className="px-5 py-3.5 text-center">Matriks Skor</th>
                 <th className="px-5 py-3.5">Tindak Lanjut & PIC</th>
+                <th className="px-5 py-3.5 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {riskList.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                  <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
                     Belum ada data risiko teridentifikasi. Aset dalam keadaan aman.
                   </td>
                 </tr>
@@ -143,6 +175,9 @@ export default async function RiskRegisterPage() {
                         {risk.pic || 'BPKAD'}
                       </p>
                     </td>
+                    <td className="px-5 py-4 text-center">
+                      <RiskActionMenu risk={risk as any} />
+                    </td>
                   </tr>
                 ))
               )}
@@ -151,7 +186,7 @@ export default async function RiskRegisterPage() {
         </div>
         
         <div className="p-4 border-t border-slate-200 flex items-center justify-between text-sm text-slate-500 bg-slate-50/50">
-          <p>Menampilkan {riskList.length} dari {riskList.length} data risiko terdaftar</p>
+          <p>Menampilkan {riskList.length} dari {allRiskList.length} data risiko terdaftar</p>
         </div>
       </div>
     </div>

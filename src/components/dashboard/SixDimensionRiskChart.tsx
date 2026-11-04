@@ -25,7 +25,6 @@ interface SixDimensionRiskChartProps {
 
 export default function SixDimensionRiskChart({
   dimensions,
-  totalAset,
 }: SixDimensionRiskChartProps) {
   // Singkatan nama dimensi untuk label sumbu X
   const shortLabels: Record<string, string> = {
@@ -75,17 +74,17 @@ export default function SixDimensionRiskChart({
           </div>
 
           <Link
-            href="/dashboard/risk"
+            href="/dashboard/tanah?dimensi=all"
             className="text-[11px] font-bold text-blue-600 hover:text-blue-800 hover:underline flex items-center gap-0.5 shrink-0"
-            title="Buka modul manajemen risiko"
+            title="Lihat seluruh aset beserta rincian skor 6 dimensi"
           >
-            Detail <ArrowUpRight className="w-3 h-3" />
+            Sumber Data <ArrowUpRight className="w-3 h-3" />
           </Link>
         </div>
 
         <div className="flex items-center justify-between text-xs text-slate-500 mb-4">
           <p className="text-[11px] text-slate-400 truncate">
-            Balok rata-rata skor per dimensi (Skala 1 - 5)
+            Klik balok dimensi untuk melihat data aset sumber
           </p>
           <span className="font-mono font-bold text-slate-700 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded text-[10px]">
             Rata-rata: {overallAvg}
@@ -115,9 +114,11 @@ export default function SixDimensionRiskChart({
             const heightPercent = Math.min(100, Math.max(12, (dim.avgScore / 5) * 100));
 
             return (
-              <div 
-                key={dim.key} 
-                className="flex-1 flex flex-col items-center h-full justify-end group relative"
+              <Link
+                key={dim.key}
+                href={`/dashboard/tanah?dimensi=${encodeURIComponent(dim.key)}`}
+                className="flex-1 flex flex-col items-center h-full justify-end group relative cursor-pointer focus:outline-none"
+                title={`Klik untuk melihat rincian aset pada ${dim.label}`}
               >
                 {/* Score floating on top of column */}
                 <motion.span 
@@ -130,7 +131,7 @@ export default function SixDimensionRiskChart({
                 </motion.span>
 
                 {/* Vertical Column Bar */}
-                <div className="w-full max-w-[36px] bg-slate-100 rounded-t-lg overflow-hidden flex flex-col justify-end h-36 p-0.5 relative">
+                <div className="w-full max-w-[36px] bg-slate-100 group-hover:bg-blue-50/80 rounded-t-lg overflow-hidden flex flex-col justify-end h-36 p-0.5 relative transition-colors ring-0 group-hover:ring-2 group-hover:ring-blue-400/50">
                   <motion.div
                     initial={{ height: 0 }}
                     animate={{ height: `${heightPercent}%` }}
@@ -140,7 +141,7 @@ export default function SixDimensionRiskChart({
                 </div>
 
                 {/* Hover Tooltip Popup */}
-                <div className="absolute bottom-full mb-8 left-1/2 -translate-x-1/2 hidden group-hover:flex flex-col items-center z-30 pointer-events-none w-44">
+                <div className="absolute bottom-full mb-8 left-1/2 -translate-x-1/2 hidden group-hover:flex flex-col items-center z-30 pointer-events-none w-48">
                   <div className="bg-slate-900 text-white p-2.5 rounded-xl shadow-xl text-center border border-slate-800 space-y-1 w-full">
                     <p className="font-bold text-xs">{dim.label}</p>
                     <p className="text-[10px] text-slate-300 font-mono">
@@ -149,39 +150,54 @@ export default function SixDimensionRiskChart({
                     <p className="text-[9px] text-slate-400 leading-tight">
                       {dim.sublabel}
                     </p>
+                    <p className="text-[9px] font-bold text-blue-400 pt-1 border-t border-slate-800 flex items-center justify-center gap-0.5">
+                      Klik untuk lihat daftar aset <ArrowUpRight className="w-2.5 h-2.5" />
+                    </p>
                   </div>
                   <div className="w-2 h-2 bg-slate-900 rotate-45 -mt-1" />
                 </div>
 
                 {/* X-Axis Label */}
                 <div className="mt-2 text-center flex flex-col items-center">
-                  <span className="p-1 rounded bg-slate-50 border border-slate-100 mb-0.5 group-hover:bg-blue-50 transition-colors">
+                  <span className="p-1 rounded bg-slate-50 border border-slate-100 mb-0.5 group-hover:bg-blue-50 group-hover:border-blue-200 transition-colors">
                     {getIcon(dim.iconName)}
                   </span>
-                  <span className="text-[10px] font-bold text-slate-700 block truncate max-w-[48px]">
+                  <span className="text-[10px] font-bold text-slate-700 group-hover:text-blue-600 block truncate max-w-[48px] transition-colors">
                     {shortLabels[dim.key] || dim.key}
                   </span>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
       </div>
 
-      {/* Footer Legend Ringkas (Satu Baris Kompak) */}
+      {/* Footer Legend Ringkas (Satu Baris Kompak & Bisa Diklik) */}
       <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500 font-medium">
-        <div className="flex items-center gap-1">
+        <Link
+          href="/dashboard/tanah?risiko=aman"
+          className="flex items-center gap-1 hover:text-emerald-700 hover:underline px-1.5 py-0.5 rounded hover:bg-emerald-50 transition-colors"
+          title="Filter aset dengan tingkat risiko Rendah / Aman"
+        >
           <span className="w-2 h-2 rounded-full bg-emerald-500" />
           <span>Aman (1-2)</span>
-        </div>
-        <div className="flex items-center gap-1">
+        </Link>
+        <Link
+          href="/dashboard/tanah?risiko=sedang"
+          className="flex items-center gap-1 hover:text-amber-700 hover:underline px-1.5 py-0.5 rounded hover:bg-amber-50 transition-colors"
+          title="Filter aset dengan tingkat risiko Sedang"
+        >
           <span className="w-2 h-2 rounded-full bg-amber-500" />
           <span>Sedang (3)</span>
-        </div>
-        <div className="flex items-center gap-1">
+        </Link>
+        <Link
+          href="/dashboard/tanah?risiko=kritis"
+          className="flex items-center gap-1 hover:text-rose-700 hover:underline px-1.5 py-0.5 rounded hover:bg-rose-50 transition-colors"
+          title="Filter aset dengan tingkat risiko Tinggi / Sangat Tinggi"
+        >
           <span className="w-2 h-2 rounded-full bg-rose-500" />
           <span>Kritis (4-5)</span>
-        </div>
+        </Link>
       </div>
     </div>
   );

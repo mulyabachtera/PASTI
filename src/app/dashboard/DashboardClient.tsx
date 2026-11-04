@@ -1,15 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { 
   TrendingUp, AlertTriangle, Activity, Map as MapIcon, 
-  ShieldAlert, ArrowUpRight, Landmark, Layers
+  ShieldAlert, ArrowUpRight, Landmark, Layers, ZoomIn, ZoomOut, X
 } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import DonutChart, { DonutSlice } from "@/components/dashboard/DonutChart";
 import SixDimensionRiskChart, { DimensionMetric } from "@/components/dashboard/SixDimensionRiskChart";
+import { DEMO_MODE } from "@/lib/demoConfig";
 
 const MapComponent = dynamic(() => import("@/components/MapComponent"), { 
   ssr: false,
@@ -61,6 +63,8 @@ export default function DashboardClient({
   urgentActions,
 }: DashboardClientProps) {
   const { data: session } = useSession();
+  const [isLogoZoomOpen, setIsLogoZoomOpen] = useState(false);
+  const [zoomScale, setZoomScale] = useState(1);
 
   const stats = [
     { 
@@ -107,14 +111,33 @@ export default function DashboardClient({
       {/* 1. WELCOME HEADER BANNER */}
       <div className="bg-white p-4 sm:p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4 md:gap-6 relative overflow-hidden">
         <div className="flex items-center gap-3.5 sm:gap-4 md:gap-5 min-w-0">
-          <div className="relative shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              setZoomScale(1);
+              setIsLogoZoomOpen(true);
+            }}
+            title="Klik untuk memperbesar Logo PASTI"
+            className="relative shrink-0 group cursor-pointer focus:outline-none"
+          >
             <img 
               src="/pasti-logo.png" 
               alt="Logo PASTI" 
-              className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl object-contain p-1 bg-gradient-to-br from-slate-50 to-emerald-50/50 border border-slate-200/80 shadow-md shadow-emerald-500/5 hover:scale-105 transition-transform" 
+              className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 rounded-2xl object-contain p-1 bg-gradient-to-br from-slate-50 to-emerald-50/50 border border-slate-200/80 shadow-md shadow-emerald-500/5 group-hover:scale-105 group-hover:border-emerald-400 transition-all" 
             />
-          </div>
+            <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-slate-900/85 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all shadow-md">
+              <ZoomIn className="w-3.5 h-3.5" />
+            </span>
+          </button>
           <div className="min-w-0">
+            {DEMO_MODE && (
+              <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-700 border border-amber-500/25 flex items-center gap-1.5 shadow-2xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                  Pratinjau Fase 1 • Validasi Konsep & Spasial
+                </span>
+              </div>
+            )}
             <h3 className="text-base sm:text-lg md:text-xl xl:text-2xl font-extrabold text-slate-800 tracking-tight whitespace-nowrap flex items-center gap-1.5">
               <span>Selamat datang kembali,</span>
               <span className="text-slate-900">{session?.user?.name || "Super Admin PASTI"}!</span>
@@ -248,7 +271,7 @@ export default function DashboardClient({
                       </div>
                     </div>
                     <p className="text-xs text-slate-600 line-clamp-2 italic">
-                      "{item.deskripsiRisiko}"
+                      &ldquo;{item.deskripsiRisiko}&rdquo;
                     </p>
                     <div className="pt-2 border-t border-rose-200/50 flex justify-end">
                       <Link
@@ -326,6 +349,82 @@ export default function DashboardClient({
           />
         </div>
       </div>
+
+      {/* 5. MODAL ZOOM LOGO PROFIL PASTI */}
+      {isLogoZoomOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setIsLogoZoomOpen(false)}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-md w-full overflow-hidden relative"
+          >
+            {/* Header Modal */}
+            <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
+              <div>
+                <h4 className="font-bold text-slate-800 text-sm">Logo Resmi SIM PASTI</h4>
+                <p className="text-[11px] text-slate-500">Pengamanan Aset Strategis Terintegrasi dan Informatif</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsLogoZoomOpen(false)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors cursor-pointer"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Area Gambar Logo yang Diperbesar */}
+            <div className="p-8 bg-gradient-to-b from-slate-50/50 via-white to-emerald-50/30 flex items-center justify-center overflow-hidden min-h-[320px]">
+              <img
+                src="/pasti-logo.png"
+                alt="Logo Profil SIM PASTI"
+                onClick={() => setZoomScale((prev) => (prev >= 1.5 ? 1 : prev + 0.25))}
+                style={{ transform: `scale(${zoomScale})` }}
+                className="w-64 h-64 sm:w-72 sm:h-72 object-contain drop-shadow-xl transition-transform duration-300 cursor-zoom-in select-none"
+                title="Klik gambar untuk memperbesar lagi"
+              />
+            </div>
+
+            {/* Footer Kontrol Zoom */}
+            <div className="px-5 py-3.5 border-t border-slate-100 bg-slate-50/80 flex items-center justify-between text-xs">
+              <span className="text-slate-500 font-medium">
+                Skala Zoom: <strong className="text-slate-800 font-mono">{Math.round(zoomScale * 100)}%</strong>
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setZoomScale((prev) => Math.max(0.75, prev - 0.25))}
+                  className="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                  title="Perkecil"
+                >
+                  <ZoomOut className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setZoomScale(1)}
+                  className="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold cursor-pointer transition-colors"
+                >
+                  Reset
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setZoomScale((prev) => Math.min(2, prev + 0.25))}
+                  className="px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                  title="Perbesar"
+                >
+                  <ZoomIn className="w-3.5 h-3.5" /> Zoom
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
     </div>
   );

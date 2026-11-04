@@ -17,6 +17,7 @@ export async function GET() {
       include: {
         tanah: {
           select: {
+            assetId: true,
             namaBarang: true,
             nibar: true,
             alamatLokasi: true,
@@ -27,31 +28,47 @@ export async function GET() {
     });
 
     const headers = [
+      'Risk ID',
       'Tingkat Risiko',
       'Skor Total (1-25)',
       'Skor Dampak (1-5)',
       'Skor Peluang (1-5)',
       'Kategori Risiko',
       'Deskripsi Kasus Risiko',
+      'Penyebab / Akar Masalah',
+      'Dampak Narasi',
+      'Pengendalian Saat Ini (Existing Control)',
+      'Status Tindak Lanjut',
+      'PIC Penanggung Jawab',
+      'Target Selesai',
+      'Asset ID Terkait',
       'NIBAR Aset Terkait',
       'Nama Aset Terkait',
       'Alamat Lokasi Aset',
       'Tanggal Teridentifikasi',
     ];
 
-    const escapeCSV = (field: any) => {
+    const escapeCSV = (field: unknown) => {
       if (field === null || field === undefined) return '""';
       const str = String(field).replace(/"/g, '""');
       return `"${str}"`;
     };
 
     const rows = risks.map((r) => [
+      escapeCSV(r.riskId || '-'),
       escapeCSV(r.tingkatRisiko.toUpperCase()),
       escapeCSV(r.skorTotal),
       escapeCSV(r.skorDampak),
       escapeCSV(r.skorPeluang),
       escapeCSV(r.kategoriRisiko),
       escapeCSV(r.deskripsiRisiko),
+      escapeCSV(r.penyebab || '-'),
+      escapeCSV(r.dampakNarasi || '-'),
+      escapeCSV(r.existingControl || '-'),
+      escapeCSV(r.statusTindakLanjut || '-'),
+      escapeCSV(r.pic || '-'),
+      escapeCSV(r.targetSelesai ? new Date(r.targetSelesai).toISOString().split('T')[0] : '-'),
+      escapeCSV(r.tanah?.assetId || '-'),
       escapeCSV(r.tanah?.nibar || '-'),
       escapeCSV(r.tanah?.namaBarang || '-'),
       escapeCSV(r.tanah?.alamatLokasi || '-'),

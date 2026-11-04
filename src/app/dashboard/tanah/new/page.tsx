@@ -12,6 +12,8 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import LiveRiskCard from "@/components/dashboard/LiveRiskCard";
 import { calculatePolygonArea, parseCoordinateText, formatArea } from "@/lib/geoUtils";
+import { DEMO_MODE, FORMS_UNDER_DEVELOPMENT } from "@/lib/demoConfig";
+import FasePlaceholder from "@/components/dashboard/FasePlaceholder";
 
 const FormMapComponent = dynamic(() => import("./FormMapComponent"), { ssr: false });
 
@@ -59,6 +61,10 @@ export default function NewTanahPage() {
     dokumenSertifikat: "",
     fotoAset: "",
   });
+
+  if (DEMO_MODE || FORMS_UNDER_DEVELOPMENT) {
+    return <FasePlaceholder type="form-tanah" />;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save, AlertTriangle, ShieldAlert, CheckCircle2, User, Calendar, Shield } from "lucide-react";
+import { ArrowLeft, Save, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 export default function NewRiskForm({ 

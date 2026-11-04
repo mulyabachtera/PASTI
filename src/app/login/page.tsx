@@ -12,19 +12,32 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     
-    const form = e.target as HTMLFormElement;
-    const email = (form.elements[0] as HTMLInputElement).value;
-    const password = (form.elements[1] as HTMLInputElement).value;
+    try {
+      const form = e.target as HTMLFormElement;
+      const email = (form.elements[0] as HTMLInputElement).value;
+      const password = (form.elements[1] as HTMLInputElement).value;
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: true,
-      callbackUrl: "/dashboard"
-    });
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+        callbackUrl: "/dashboard"
+      });
 
-    if (res?.error) {
-      alert("Email atau password salah!");
+      if (res?.error) {
+        alert("Email atau password salah!");
+        setIsLoading(false);
+        return;
+      }
+
+      if (res?.ok) {
+        window.location.href = "/dashboard";
+      } else {
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Terjadi kendala koneksi ke server saat proses masuk. Silakan coba kembali.");
       setIsLoading(false);
     }
   };
