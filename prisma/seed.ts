@@ -12,15 +12,16 @@ async function main() {
   await prisma.user.upsert({
     where: { email: 'superadmin@pasti.go.id' },
     update: {
-      nip: '198001012005011001',
+      nip: '199010252022031003',
+      name: 'Mulya Bachtera, S. Inf',
       isEmailVerified: true,
       emailVerifiedAt: new Date(),
     },
     create: {
-      nip: '198001012005011001',
+      nip: '199010252022031003',
       email: 'superadmin@pasti.go.id',
       password,
-      name: 'Super Admin PASTI',
+      name: 'Mulya Bachtera, S. Inf',
       role: Role.SUPER_ADMIN,
       isEmailVerified: true,
       emailVerifiedAt: new Date(),
@@ -31,15 +32,16 @@ async function main() {
   await prisma.user.upsert({
     where: { email: 'admin@pasti.go.id' },
     update: {
-      nip: '198203102008011004',
+      nip: '197712141997031001',
+      name: 'Gunawan Putra, SE, M.Si',
       isEmailVerified: true,
       emailVerifiedAt: new Date(),
     },
     create: {
-      nip: '198203102008011004',
+      nip: '197712141997031001',
       email: 'admin@pasti.go.id',
       password,
-      name: 'Admin Instansi',
+      name: 'Gunawan Putra, SE, M.Si',
       role: Role.ADMIN_PEMERINTAH,
       isEmailVerified: true,
       emailVerifiedAt: new Date(),
@@ -51,6 +53,7 @@ async function main() {
     where: { email: 'vendor@swasta.com' },
     update: {
       nip: '199512312020011005',
+      name: 'Vendor Aset',
       isEmailVerified: true,
       emailVerifiedAt: new Date(),
     },
@@ -69,15 +72,16 @@ async function main() {
   await prisma.user.upsert({
     where: { email: 'verifikator@pasti.go.id' },
     update: {
-      nip: '198505152010011002',
+      nip: '198306012010031003',
+      name: 'Erwin Pinosa, ST',
       isEmailVerified: true,
       emailVerifiedAt: new Date(),
     },
     create: {
-      nip: '198505152010011002',
+      nip: '198306012010031003',
       email: 'verifikator@pasti.go.id',
       password,
-      name: 'Verifikator BPKAD',
+      name: 'Erwin Pinosa, ST',
       role: Role.VERIFICATOR,
       isEmailVerified: true,
       emailVerifiedAt: new Date(),
@@ -88,15 +92,16 @@ async function main() {
   await prisma.user.upsert({
     where: { email: 'operator@pasti.go.id' },
     update: {
-      nip: '199208202015021003',
+      nip: '198909192019031006',
+      name: 'Ahmaddi M, A. Md',
       isEmailVerified: true,
       emailVerifiedAt: new Date(),
     },
     create: {
-      nip: '199208202015021003',
+      nip: '198909192019031006',
       email: 'operator@pasti.go.id',
       password,
-      name: 'Operator BMD',
+      name: 'Ahmaddi M, A. Md',
       role: Role.OPERATOR,
       isEmailVerified: true,
       emailVerifiedAt: new Date(),

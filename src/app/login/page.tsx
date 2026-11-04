@@ -125,13 +125,13 @@ export default function LoginPage() {
                   <input 
                     type="text" 
                     required
-                    defaultValue="198001012005011001"
+                    defaultValue="199010252022031003"
                     className="w-full bg-slate-950/50 border border-slate-700/50 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-600 shadow-inner font-mono text-sm"
                     placeholder="Masukkan NIP (18 digit) atau Email..."
                   />
                 </div>
                 <p className="text-[11px] text-slate-400 ml-1">
-                  Gunakan <strong>NIP</strong> (contoh: <code>198001012005011001</code>) atau alamat email terdaftar.
+                  Gunakan <strong>NIP</strong> (contoh: <code>199010252022031003</code>) atau alamat email terdaftar.
                 </p>
               </div>
 

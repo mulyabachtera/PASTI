@@ -46,3 +46,9 @@ next-env.d.ts
 .cursor/
 .devin/
 
+# Sensitive local credentials
+akun.txt
+*.pem
+credentials.txt
+
+
