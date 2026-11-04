@@ -10,9 +10,12 @@ import { useSession } from "next-auth/react";
 
 interface UserItem {
   id: string;
+  nip?: string | null;
   name: string;
   email: string;
   role: "SUPER_ADMIN" | "VERIFICATOR" | "OPERATOR" | "ADMIN_PEMERINTAH" | "VENDOR_SWASTA";
+  isEmailVerified: boolean;
+  emailVerifiedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -37,17 +40,21 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
 
   // Form State (Add)
   const [addName, setAddName] = useState("");
+  const [addNip, setAddNip] = useState("");
   const [addEmail, setAddEmail] = useState("");
   const [addPassword, setAddPassword] = useState("");
   const [addRole, setAddRole] = useState<UserItem["role"]>("OPERATOR");
+  const [addIsEmailVerified, setAddIsEmailVerified] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Form State (Edit)
   const [editName, setEditName] = useState("");
+  const [editNip, setEditNip] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editRole, setEditRole] = useState<UserItem["role"]>("OPERATOR");
   const [editPassword, setEditPassword] = useState("");
+  const [editIsEmailVerified, setEditIsEmailVerified] = useState(true);
 
   const roleMeta: Record<UserItem["role"], { label: string; badge: string; icon: any; desc: string }> = {
     SUPER_ADMIN: {
@@ -84,9 +91,11 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
 
   // Filtered users
   const filteredUsers = users.filter((u) => {
+    const q = searchQuery.toLowerCase();
     const matchesSearch = 
-      u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      u.email.toLowerCase().includes(searchQuery.toLowerCase());
+      u.name.toLowerCase().includes(q) ||
+      u.email.toLowerCase().includes(q) ||
+      (u.nip && u.nip.toLowerCase().includes(q));
     const matchesRole = roleFilter === "ALL" || u.role === roleFilter;
     return matchesSearch && matchesRole;
   });
@@ -104,11 +113,31 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
   const handleOpenEdit = (user: UserItem) => {
     setSelectedUser(user);
     setEditName(user.name);
+    setEditNip(user.nip || "");
     setEditEmail(user.email);
     setEditRole(user.role);
+    setEditIsEmailVerified(user.isEmailVerified);
     setEditPassword("");
     setErrorMsg(null);
     setIsEditModalOpen(true);
+  };
+
+  // Toggle Email Verification
+  const handleToggleVerifyEmail = async (user: UserItem) => {
+    try {
+      const res = await fetch(`/api/users/${user.id}/verify-email`, {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Gagal memperbarui status verifikasi.");
+        return;
+      }
+      setUsers(users.map((u) => (u.id === user.id ? { ...u, ...data.user } : u)));
+      alert(data.message);
+    } catch (err) {
+      alert("Terjadi kesalahan jaringan.");
+    }
   };
 
   // Submit Add User
@@ -122,10 +151,12 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: addName,
-          email: addEmail,
+          nip: addNip.trim(),
+          name: addName.trim(),
+          email: addEmail.trim(),
           password: addPassword,
           role: addRole,
+          isEmailVerified: addIsEmailVerified,
         }),
       });
 
@@ -138,9 +169,11 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
       setUsers([data.user, ...users]);
       setIsAddModalOpen(false);
       setAddName("");
+      setAddNip("");
       setAddEmail("");
       setAddPassword("");
       setAddRole("OPERATOR");
+      setAddIsEmailVerified(true);
       alert(data.message || "Akun baru berhasil dibuat!");
     } catch (err) {
       setErrorMsg("Terjadi kesalahan jaringan.");
@@ -161,9 +194,11 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: editName,
-          email: editEmail,
+          nip: editNip.trim(),
+          name: editName.trim(),
+          email: editEmail.trim(),
           role: editRole,
+          isEmailVerified: editIsEmailVerified,
           password: editPassword || undefined,
         }),
       });
@@ -318,8 +353,9 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
           <table className="w-full text-left text-sm text-slate-600">
             <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 text-xs uppercase tracking-wider">
               <tr>
-                <th className="px-5 py-3.5">Nama & Email</th>
+                <th className="px-5 py-3.5">Nama, NIP & Email</th>
                 <th className="px-5 py-3.5">Peran (Role)</th>
+                <th className="px-5 py-3.5">Status Verifikasi</th>
                 <th className="px-5 py-3.5">Deskripsi Hak Akses</th>
                 <th className="px-5 py-3.5">Terdaftar Sejak</th>
                 <th className="px-5 py-3.5 text-center">Aksi</th>
@@ -328,7 +364,7 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
             <tbody className="divide-y divide-slate-100">
               {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-slate-400">
+                  <td colSpan={6} className="px-6 py-12 text-center text-slate-400">
                     Tidak ditemukan data pengguna yang cocok.
                   </td>
                 </tr>
@@ -347,7 +383,7 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
                     <tr key={user.id} className="hover:bg-slate-50/80 transition-colors">
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 shrink-0 uppercase text-xs">
+                          <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 shrink-0 uppercase text-xs">
                             {user.name.slice(0, 2)}
                           </div>
                           <div>
@@ -359,7 +395,12 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
                                 </span>
                               )}
                             </span>
-                            <span className="text-xs text-slate-500 font-mono">{user.email}</span>
+                            <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                              <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-800 border border-blue-200">
+                                {user.nip ? `NIP. ${user.nip}` : "NIP: -"}
+                              </span>
+                              <span className="text-xs text-slate-500 font-mono">{user.email}</span>
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -368,6 +409,27 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
                           <Icon className="w-3.5 h-3.5" />
                           {meta.label}
                         </span>
+                      </td>
+                      <td className="px-5 py-4">
+                        {user.isEmailVerified ? (
+                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>Terverifikasi</span>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-start gap-1">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                              ⏳ Belum Verifikasi
+                            </span>
+                            <button
+                              onClick={() => handleToggleVerifyEmail(user)}
+                              className="text-[11px] text-blue-600 hover:text-blue-800 font-semibold underline cursor-pointer"
+                              title="Klik untuk memverifikasi email akun ini sekarang"
+                            >
+                              Verifikasi Sekarang
+                            </button>
+                          </div>
+                        )}
                       </td>
                       <td className="px-5 py-4">
                         <p className="text-xs text-slate-600 max-w-sm leading-relaxed">{meta.desc}</p>
@@ -467,6 +529,22 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
                     onChange={(e) => setAddName(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   />
+                </div>
+
+                {/* NIP */}
+                <div className="space-y-1">
+                  <label className="font-semibold text-slate-700 block">
+                    NIP (Nomor Induk Pegawai / ID Petugas) <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="18 digit angka, contoh: 198001012005011001"
+                    value={addNip}
+                    onChange={(e) => setAddNip(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
+                  />
+                  <p className="text-[11px] text-slate-400">Digunakan sebagai identitas utama login pegawai ke sistem.</p>
                 </div>
 
                 {/* Email */}
@@ -612,6 +690,26 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
                     </div>
                   </div>
                 </div>
+
+                {/* Status Verifikasi Email */}
+                <div className="p-3.5 bg-emerald-50/60 rounded-xl border border-emerald-200">
+                  <label className="flex items-start gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={addIsEmailVerified}
+                      onChange={(e) => setAddIsEmailVerified(e.target.checked)}
+                      className="w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 mt-0.5 cursor-pointer"
+                    />
+                    <div>
+                      <span className="text-xs font-bold text-slate-800 block">
+                        Verifikasi Email Langsung (Disetujui Super Admin)
+                      </span>
+                      <span className="text-[11px] text-slate-500 block mt-0.5 leading-relaxed">
+                        Jika dicentang, akun langsung berstatus terverifikasi dan dapat segera login menggunakan NIP atau Email tanpa menunggu verifikasi eksternal.
+                      </span>
+                    </div>
+                  </label>
+                </div>
               </div>
 
               {/* Footer */}
@@ -692,6 +790,21 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
                   />
                 </div>
 
+                {/* NIP */}
+                <div className="space-y-1">
+                  <label className="font-semibold text-slate-700 block">
+                    NIP (Nomor Induk Pegawai / ID Petugas)
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editNip}
+                    onChange={(e) => setEditNip(e.target.value)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
+                    placeholder="Contoh: 198001012005011001"
+                  />
+                </div>
+
                 {/* Email */}
                 <div className="space-y-1">
                   <label className="font-semibold text-slate-700 block">Email</label>
@@ -702,6 +815,26 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
                     onChange={(e) => setEditEmail(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                   />
+                </div>
+
+                {/* Status Verifikasi Email */}
+                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200">
+                  <label className="flex items-start gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editIsEmailVerified}
+                      onChange={(e) => setEditIsEmailVerified(e.target.checked)}
+                      className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300 mt-0.5 cursor-pointer"
+                    />
+                    <div>
+                      <span className="text-xs font-bold text-slate-800 block">
+                        Status Verifikasi Email: {editIsEmailVerified ? "Terverifikasi ✓" : "Belum Terverifikasi ⏳"}
+                      </span>
+                      <span className="text-[11px] text-slate-500 block mt-0.5">
+                        Centang untuk mengaktifkan akun dan mengizinkan login ke SIM PASTI.
+                      </span>
+                    </div>
+                  </label>
                 </div>
 
                 {/* Ubah Peran */}

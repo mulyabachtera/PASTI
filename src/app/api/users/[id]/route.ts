@@ -27,7 +27,7 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const { name, email, role, password } = body;
+    const { nip, name, email, role, password, isEmailVerified } = body;
 
     const existingUser = await prisma.user.findUnique({
       where: { id },
@@ -36,19 +36,37 @@ export async function PUT(
       return NextResponse.json({ error: 'Pengguna tidak ditemukan.' }, { status: 404 });
     }
 
+    // Jika ganti NIP, pastikan tidak bentrok dengan user lain
+    if (nip && nip.trim() !== existingUser.nip) {
+      const nipConflict = await prisma.user.findFirst({
+        where: { nip: nip.trim() },
+      });
+      if (nipConflict && nipConflict.id !== id) {
+        return NextResponse.json({ error: `NIP ${nip.trim()} sudah digunakan oleh pengguna lain (${nipConflict.name}).` }, { status: 409 });
+      }
+    }
+
     // Jika ganti email, pastikan tidak bentrok dengan user lain
     if (email && email.trim().toLowerCase() !== existingUser.email) {
       const emailConflict = await prisma.user.findUnique({
         where: { email: email.trim().toLowerCase() },
       });
-      if (emailConflict) {
+      if (emailConflict && emailConflict.id !== id) {
         return NextResponse.json({ error: 'Email sudah digunakan oleh akun lain.' }, { status: 409 });
       }
     }
 
     const updateData: any = {};
+    if (nip && nip.trim()) updateData.nip = nip.trim();
     if (name && name.trim()) updateData.name = name.trim();
     if (email && email.trim()) updateData.email = email.trim().toLowerCase();
+    if (typeof isEmailVerified === 'boolean') {
+      updateData.isEmailVerified = isEmailVerified;
+      if (isEmailVerified) {
+        updateData.emailVerifiedAt = new Date();
+        updateData.emailVerificationToken = null;
+      }
+    }
     if (role) {
       const validRoles: Role[] = [
         Role.SUPER_ADMIN,
@@ -73,9 +91,12 @@ export async function PUT(
       data: updateData,
       select: {
         id: true,
+        nip: true,
         name: true,
         email: true,
         role: true,
+        isEmailVerified: true,
+        emailVerifiedAt: true,
         updatedAt: true,
       },
     });

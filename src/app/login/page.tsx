@@ -25,7 +25,7 @@ export default function LoginPage() {
       });
 
       if (res?.error) {
-        alert("Email atau password salah!");
+        alert(res.error === "CredentialsSignin" ? "NIP/Email atau password tidak sesuai atau akun belum diverifikasi." : res.error);
         setIsLoading(false);
         return;
       }
@@ -117,19 +117,22 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300 ml-1">Email / NIP</label>
+                <label className="text-sm font-medium text-slate-300 ml-1">NIP atau Email Akun</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Mail className="h-5 w-5 text-slate-500" />
                   </div>
                   <input 
-                    type="email" 
+                    type="text" 
                     required
-                    defaultValue="superadmin@pasti.go.id"
-                    className="w-full bg-slate-950/50 border border-slate-700/50 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-600 shadow-inner"
-                    placeholder="Masukkan email anda..."
+                    defaultValue="198001012005011001"
+                    className="w-full bg-slate-950/50 border border-slate-700/50 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-600 shadow-inner font-mono text-sm"
+                    placeholder="Masukkan NIP (18 digit) atau Email..."
                   />
                 </div>
+                <p className="text-[11px] text-slate-400 ml-1">
+                  Gunakan <strong>NIP</strong> (contoh: <code>198001012005011001</code>) atau alamat email terdaftar.
+                </p>
               </div>
 
               <div className="space-y-2">

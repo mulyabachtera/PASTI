@@ -123,11 +123,15 @@ enum Role {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  password String
-  name     String
-  role     Role   @default(OPERATOR)
+  id                     String    @id @default(uuid())
+  nip                    String?   @unique // Nomor Induk Pegawai (PNS/ASN) atau ID Petugas
+  email                  String    @unique
+  password               String
+  name                   String
+  role                   Role      @default(OPERATOR)
+  isEmailVerified        Boolean   @default(false)
+  emailVerificationToken String?
+  emailVerifiedAt        DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -20,9 +20,12 @@ export async function GET() {
     const users = await prisma.user.findMany({
       select: {
         id: true,
+        nip: true,
         name: true,
         email: true,
         role: true,
+        isEmailVerified: true,
+        emailVerifiedAt: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -49,8 +52,11 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, email, password, role: userRole } = body;
+    const { nip, name, email, password, role: userRole, isEmailVerified } = body;
 
+    if (!nip || !nip.trim()) {
+      return NextResponse.json({ error: 'NIP / Nomor Induk Pegawai wajib diisi.' }, { status: 400 });
+    }
     if (!name || !name.trim()) {
       return NextResponse.json({ error: 'Nama pengguna wajib diisi.' }, { status: 400 });
     }
@@ -73,29 +79,47 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Peran (Role) yang dipilih tidak valid.' }, { status: 400 });
     }
 
+    // Cek duplikasi NIP
+    const existingNip = await prisma.user.findFirst({
+      where: { nip: nip.trim() },
+    });
+    if (existingNip) {
+      return NextResponse.json({ error: `NIP ${nip.trim()} sudah digunakan oleh akun lain (${existingNip.name}).` }, { status: 409 });
+    }
+
     // Cek duplikasi email
-    const existing = await prisma.user.findUnique({
+    const existingEmail = await prisma.user.findUnique({
       where: { email: email.trim().toLowerCase() },
     });
-    if (existing) {
+    if (existingEmail) {
       return NextResponse.json({ error: `Email ${email} sudah terdaftar di sistem.` }, { status: 409 });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const shouldVerify = isEmailVerified !== undefined ? Boolean(isEmailVerified) : true;
+    const verificationToken = crypto.randomUUID();
 
     const newUser = await prisma.user.create({
       data: {
+        nip: nip.trim(),
         name: name.trim(),
         email: email.trim().toLowerCase(),
         password: hashedPassword,
         role: userRole,
+        isEmailVerified: shouldVerify,
+        emailVerificationToken: shouldVerify ? null : verificationToken,
+        emailVerifiedAt: shouldVerify ? new Date() : null,
       },
       select: {
         id: true,
+        nip: true,
         name: true,
         email: true,
         role: true,
+        isEmailVerified: true,
+        emailVerifiedAt: true,
         createdAt: true,
+        updatedAt: true,
       },
     });
 

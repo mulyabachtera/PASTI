@@ -11,60 +11,95 @@ async function main() {
   // 1. Super Admin
   await prisma.user.upsert({
     where: { email: 'superadmin@pasti.go.id' },
-    update: {},
+    update: {
+      nip: '198001012005011001',
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
+    },
     create: {
+      nip: '198001012005011001',
       email: 'superadmin@pasti.go.id',
       password,
       name: 'Super Admin PASTI',
       role: Role.SUPER_ADMIN,
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
     },
   });
 
   // 2. Admin Pemerintah
   await prisma.user.upsert({
     where: { email: 'admin@pasti.go.id' },
-    update: {},
+    update: {
+      nip: '198203102008011004',
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
+    },
     create: {
+      nip: '198203102008011004',
       email: 'admin@pasti.go.id',
       password,
       name: 'Admin Instansi',
       role: Role.ADMIN_PEMERINTAH,
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
     },
   });
 
   // 3. Vendor Swasta
   await prisma.user.upsert({
     where: { email: 'vendor@swasta.com' },
-    update: {},
+    update: {
+      nip: '199512312020011005',
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
+    },
     create: {
+      nip: '199512312020011005',
       email: 'vendor@swasta.com',
       password,
       name: 'Vendor Aset',
       role: Role.VENDOR_SWASTA,
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
     },
   });
 
   // 4. Verifikator
   await prisma.user.upsert({
     where: { email: 'verifikator@pasti.go.id' },
-    update: {},
+    update: {
+      nip: '198505152010011002',
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
+    },
     create: {
+      nip: '198505152010011002',
       email: 'verifikator@pasti.go.id',
       password,
       name: 'Verifikator BPKAD',
       role: Role.VERIFICATOR,
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
     },
   });
 
   // 5. Operator
   await prisma.user.upsert({
     where: { email: 'operator@pasti.go.id' },
-    update: {},
+    update: {
+      nip: '199208202015021003',
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
+    },
     create: {
+      nip: '199208202015021003',
       email: 'operator@pasti.go.id',
       password,
       name: 'Operator BMD',
       role: Role.OPERATOR,
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
     },
   });
 

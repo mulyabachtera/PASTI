@@ -33,9 +33,12 @@ export default async function UsersPage() {
   const rawUsers = await prisma.user.findMany({
     select: {
       id: true,
+      nip: true,
       name: true,
       email: true,
       role: true,
+      isEmailVerified: true,
+      emailVerifiedAt: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -44,6 +47,7 @@ export default async function UsersPage() {
 
   const serializedUsers = rawUsers.map((u) => ({
     ...u,
+    emailVerifiedAt: u.emailVerifiedAt ? u.emailVerifiedAt.toISOString() : null,
     createdAt: u.createdAt.toISOString(),
     updatedAt: u.updatedAt.toISOString(),
   }));

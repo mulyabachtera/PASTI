@@ -13,15 +13,21 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Invalid credentials");
+          throw new Error("NIP/Email dan password wajib diisi");
         }
         
-        const user = await prisma.user.findUnique({
-          where: { email: credentials.email }
+        const identifier = credentials.email.trim();
+        const user = await prisma.user.findFirst({
+          where: {
+            OR: [
+              { email: identifier.toLowerCase() },
+              { nip: identifier }
+            ]
+          }
         });
         
         if (!user || !user?.password) {
-          throw new Error("Invalid credentials");
+          throw new Error("NIP/Email atau password salah");
         }
         
         const isCorrectPassword = await bcrypt.compare(
@@ -30,14 +36,20 @@ export const authOptions: NextAuthOptions = {
         );
         
         if (!isCorrectPassword) {
-          throw new Error("Invalid credentials");
+          throw new Error("NIP/Email atau password salah");
+        }
+
+        if (!user.isEmailVerified) {
+          throw new Error("Email akun ini belum diverifikasi. Silakan hubungi Super Admin untuk verifikasi.");
         }
         
         return {
           id: user.id,
           name: user.name,
           email: user.email,
+          nip: user.nip,
           role: user.role,
+          isEmailVerified: user.isEmailVerified,
         };
       }
     })
@@ -47,13 +59,17 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = (user as { role?: string }).role as string;
+        token.nip = (user as { nip?: string | null }).nip;
+        token.isEmailVerified = (user as { isEmailVerified?: boolean }).isEmailVerified;
       }
       return token;
     },
     async session({ session, token }) {
       if (session?.user) {
-        (session.user as { id?: string; role?: string }).id = (token.id || token.sub) as string;
-        (session.user as { id?: string; role?: string }).role = token.role as string;
+        (session.user as any).id = (token.id || token.sub) as string;
+        (session.user as any).role = token.role as string;
+        (session.user as any).nip = token.nip as string | null;
+        (session.user as any).isEmailVerified = token.isEmailVerified as boolean;
       }
       return session;
     }

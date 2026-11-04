@@ -50,10 +50,10 @@ function SidebarNav({ isCollapsed }: { isCollapsed: boolean }) {
             title={isCollapsed ? `${item.name}${item.badge ? ` (${item.badge})` : ''}` : undefined}
             className={`flex items-center ${
               isCollapsed ? "justify-center px-0 py-3" : "gap-3 px-4 py-3"
-            } rounded-xl font-medium transition-all group relative ${
+            } rounded-xl font-medium transition-all group relative outline-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 select-none ${
               isActive 
-                ? "bg-blue-600/15 text-blue-400 border border-blue-500/30" 
-                : "text-slate-300 hover:text-white hover:bg-slate-800/50"
+                ? "bg-blue-600/15 text-blue-400 border border-blue-500/30 shadow-xs" 
+                : "border border-transparent text-slate-300 hover:text-white hover:bg-slate-800/50"
             }`}
           >
             <item.icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-blue-400" : "text-slate-400 group-hover:text-white"}`} />
@@ -226,6 +226,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </div>
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-white truncate max-w-[130px]">{session?.user?.name || "Pengguna"}</p>
+                  {(session?.user as any)?.nip && (
+                    <p className="text-[10px] text-slate-400 font-mono truncate">NIP: {(session?.user as any)?.nip}</p>
+                  )}
                   <p className="text-[10px] text-blue-400 truncate">{roleLabels[(session?.user as any)?.role] || "Pengguna"}</p>
                 </div>
               </div>
