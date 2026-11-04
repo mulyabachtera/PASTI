@@ -3,9 +3,12 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
-import { Map, ShieldCheck, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
+import { Map, ShieldCheck, Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
+  const [identifier, setIdentifier] = useState("199010252022031003");
+  const [password, setPassword] = useState("rahasia123");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -13,12 +16,8 @@ export default function LoginPage() {
     setIsLoading(true);
     
     try {
-      const form = e.target as HTMLFormElement;
-      const email = (form.elements[0] as HTMLInputElement).value;
-      const password = (form.elements[1] as HTMLInputElement).value;
-
       const res = await signIn("credentials", {
-        email,
+        email: identifier.trim(),
         password,
         redirect: false,
         callbackUrl: "/dashboard"
@@ -125,7 +124,8 @@ export default function LoginPage() {
                   <input 
                     type="text" 
                     required
-                    defaultValue="199010252022031003"
+                    value={identifier}
+                    onChange={(e) => setIdentifier(e.target.value)}
                     className="w-full bg-slate-950/50 border border-slate-700/50 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-600 shadow-inner font-mono text-sm"
                     placeholder="Masukkan NIP (18 digit) atau Email..."
                   />
@@ -145,12 +145,27 @@ export default function LoginPage() {
                     <Lock className="h-5 w-5 text-slate-500" />
                   </div>
                   <input 
-                    type="password" 
+                    type={showPassword ? "text" : "password"} 
                     required
-                    defaultValue="rahasia123"
-                    className="w-full bg-slate-950/50 border border-slate-700/50 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-600 shadow-inner"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-slate-950/50 border border-slate-700/50 text-white rounded-xl py-3.5 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-600 shadow-inner font-mono text-sm"
                     placeholder="••••••••"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-200 transition-colors cursor-pointer"
+                    title={showPassword ? "Sembunyikan password" : "Lihat password"}
+                    aria-label={showPassword ? "Sembunyikan password" : "Lihat password"}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5 text-blue-400 hover:text-blue-300 transition-colors" />
+                    ) : (
+                      <Eye className="h-5 w-5 text-slate-500 hover:text-slate-300 transition-colors" />
+                    )}
+                  </button>
                 </div>
               </div>
 
