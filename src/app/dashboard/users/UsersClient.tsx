@@ -135,7 +135,7 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
       }
       setUsers(users.map((u) => (u.id === user.id ? { ...u, ...data.user } : u)));
       alert(data.message);
-    } catch (err) {
+    } catch {
       alert("Terjadi kesalahan jaringan.");
     }
   };
@@ -175,7 +175,7 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
       setAddRole("OPERATOR");
       setAddIsEmailVerified(true);
       alert(data.message || "Akun baru berhasil dibuat!");
-    } catch (err) {
+    } catch {
       setErrorMsg("Terjadi kesalahan jaringan.");
     } finally {
       setIsSubmitting(false);
@@ -213,7 +213,7 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
       setIsEditModalOpen(false);
       setSelectedUser(null);
       alert(data.message || "Data akun berhasil diperbarui!");
-    } catch (err) {
+    } catch {
       setErrorMsg("Terjadi kesalahan jaringan.");
     } finally {
       setIsSubmitting(false);
@@ -241,7 +241,7 @@ export default function UsersClient({ initialUsers }: UsersClientProps) {
 
       setUsers(users.filter((u) => u.id !== user.id));
       alert(data.message || "Pengguna berhasil dihapus.");
-    } catch (err) {
+    } catch {
       alert("Terjadi kesalahan jaringan.");
     }
   };
