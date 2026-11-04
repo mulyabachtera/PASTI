@@ -6,8 +6,8 @@ import { motion } from "framer-motion";
 import { Map, ShieldCheck, Mail, Lock, ArrowRight, Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
-  const [identifier, setIdentifier] = useState("199010252022031003");
-  const [password, setPassword] = useState("rahasia123");
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
