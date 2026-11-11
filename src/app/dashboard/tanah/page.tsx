@@ -11,6 +11,9 @@ import { calculateAutomatedRisk } from '@/lib/riskCalculator';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const DIMENSION_META: Record<string, { label: string; field: string }> = {
   administrasi: { label: 'Risiko Administrasi (Papan Aset & KIB A)', field: 'skorAdministrasi' },
   legal: { label: 'Risiko Legalitas (Sertifikasi BPN & Hak)', field: 'skorLegal' },

@@ -3,6 +3,10 @@ import DashboardClient from "./DashboardClient";
 import { calculateAutomatedRisk } from "@/lib/riskCalculator";
 import { DimensionMetric } from "@/components/dashboard/SixDimensionRiskChart";
 
+// Memastikan dashboard selalu menyajikan data riil paling segar (real-time SSR, no static caching)
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function DashboardPage() {
   const [tanahList, riskList, aggTanah] = await Promise.all([
     prisma.tanah.findMany({

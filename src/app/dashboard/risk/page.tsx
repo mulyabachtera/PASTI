@@ -6,6 +6,9 @@ import FasePlaceholder from '@/components/dashboard/FasePlaceholder';
 import TableSearchInput from '@/components/dashboard/TableSearchInput';
 import RiskActionMenu from './RiskActionMenu';
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function RiskRegisterPage({
   searchParams,
 }: {

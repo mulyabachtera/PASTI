@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -12,14 +12,43 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [savedNips, setSavedNips] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("pasti_saved_nips");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setSavedNips(parsed);
+        }
+      }
+    } catch (err) {
+      console.error("Gagal membaca riwayat NIP:", err);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
+    const cleanIdentifier = identifier.trim();
+
+    // Simpan riwayat NIP/Email yang pernah diketik untuk rekomendasi berikutnya
+    if (cleanIdentifier) {
+      try {
+        const existing = JSON.parse(localStorage.getItem("pasti_saved_nips") || "[]");
+        const updated = [cleanIdentifier, ...existing.filter((item: string) => item !== cleanIdentifier)].slice(0, 5);
+        localStorage.setItem("pasti_saved_nips", JSON.stringify(updated));
+        setSavedNips(updated);
+      } catch (err) {
+        console.error("Gagal menyimpan riwayat NIP:", err);
+      }
+    }
+
     try {
       const res = await signIn("credentials", {
-        email: identifier.trim(),
+        email: cleanIdentifier,
         password,
         redirect: false,
         callbackUrl: "/dashboard"
@@ -118,12 +147,16 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-300 ml-1">NIP atau Email Akun</label>
+                <label htmlFor="identifier" className="text-sm font-medium text-slate-300 ml-1">NIP atau Email Akun</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Mail className="h-5 w-5 text-slate-500" />
                   </div>
                   <input 
+                    id="identifier"
+                    name="username"
+                    autoComplete="username"
+                    list="nip-suggestions"
                     type="text" 
                     required
                     value={identifier}
@@ -131,15 +164,17 @@ export default function LoginPage() {
                     className="w-full bg-slate-950/50 border border-slate-700/50 text-white rounded-xl py-3.5 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder:text-slate-600 shadow-inner font-mono text-sm"
                     placeholder="Masukkan NIP (18 digit) atau Email..."
                   />
+                  <datalist id="nip-suggestions">
+                    {savedNips.map((nip) => (
+                      <option key={nip} value={nip} />
+                    ))}
+                  </datalist>
                 </div>
-                <p className="text-[11px] text-slate-400 ml-1">
-                  Gunakan <strong>NIP</strong> (contoh: <code>199010252022031003</code>) atau alamat email terdaftar.
-                </p>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between ml-1">
-                  <label className="text-sm font-medium text-slate-300">Password</label>
+                  <label htmlFor="password" className="text-sm font-medium text-slate-300">Password</label>
                   <a href="#" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">Lupa Password?</a>
                 </div>
                 <div className="relative">
@@ -147,6 +182,9 @@ export default function LoginPage() {
                     <Lock className="h-5 w-5 text-slate-500" />
                   </div>
                   <input 
+                    id="password"
+                    name="password"
+                    autoComplete="current-password"
                     type={showPassword ? "text" : "password"} 
                     required
                     value={password}
@@ -189,8 +227,8 @@ export default function LoginPage() {
 
             <div className="mt-8 pt-6 border-t border-slate-800 text-center">
               <p className="text-xs text-slate-500 leading-relaxed">
-                &copy; 2026 SIM PASTI v3.0 Enterprise Edition.<br/> 
-                Direktorat Jenderal Pengelolaan Aset Negara
+                &copy; 2026 SIM PASTI Kabupaten Aceh Tengah<br/> 
+                Pemerintah Kabupaten Aceh Tengah
               </p>
             </div>
           </div>

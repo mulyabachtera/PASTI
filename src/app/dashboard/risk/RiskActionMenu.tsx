@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { 
   MoreVertical, Eye, Edit, Trash2, X, ExternalLink, 
   AlertTriangle, ShieldCheck, User, Calendar, Loader2, Save 
@@ -38,6 +39,8 @@ export default function RiskActionMenu({ risk }: { risk: RiskItem }) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
 
   // Form State untuk Edit
   const [editKategori, setEditKategori] = useState(risk.kategoriRisiko || "Sengketa Lahan");
@@ -53,18 +56,63 @@ export default function RiskActionMenu({ risk }: { risk: RiskItem }) {
     risk.targetSelesai ? new Date(risk.targetSelesai).toISOString().split("T")[0] : ""
   );
 
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on click outside
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const updatePosition = () => {
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const menuWidth = 144; // w-36 = 144px
+      const left = Math.max(10, rect.right - menuWidth);
+      const spaceBelow = window.innerHeight - rect.bottom;
+      // Jika ruang bawah sempit, buka ke atas
+      const top = spaceBelow < 160 ? Math.max(10, rect.top - 150) : rect.bottom + 6;
+      setCoords({ top, left });
+    }
+  };
+
+  const toggleDropdown = () => {
+    if (!isDropdownOpen) {
+      updatePosition();
+      setIsDropdownOpen(true);
+    } else {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  // Close dropdown on click outside or scroll
+  useEffect(() => {
+    if (!isDropdownOpen) return;
+
+    function handleScrollOrResize() {
+      setIsDropdownOpen(false);
+    }
+
     function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false);
       }
     }
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    window.addEventListener("scroll", handleScrollOrResize, true);
+    window.addEventListener("resize", handleScrollOrResize);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScrollOrResize, true);
+      window.removeEventListener("resize", handleScrollOrResize);
+    };
+  }, [isDropdownOpen]);
 
   // Hitung live matriks skor & tingkat risiko saat diedit
   const liveTotal = editDampakScore * editPeluangScore;
@@ -162,49 +210,63 @@ export default function RiskActionMenu({ risk }: { risk: RiskItem }) {
   };
 
   return (
-    <div className="relative inline-block text-left" ref={menuRef}>
+    <>
       {/* Trigger Button Titik Tiga */}
       <button 
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors focus:outline-none"
+        ref={buttonRef}
+        type="button"
+        onClick={toggleDropdown}
+        className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors focus:outline-none cursor-pointer"
         title="Menu Aksi"
       >
         <MoreVertical className="w-4 h-4" />
       </button>
 
-      {/* Dropdown Options */}
-      {isDropdownOpen && (
-        <div className="origin-top-right absolute right-0 mt-1 w-36 rounded-xl shadow-lg bg-white ring-1 ring-black/5 z-40 py-1 divide-y divide-slate-100 text-left">
+      {/* Dropdown Options via Portal */}
+      {isDropdownOpen && coords && mounted && createPortal(
+        <div 
+          ref={menuRef}
+          style={{
+            position: "fixed",
+            top: `${coords.top}px`,
+            left: `${coords.left}px`,
+          }}
+          className="w-36 rounded-xl shadow-xl bg-white border border-slate-200/80 ring-1 ring-black/5 z-[9999] py-1 divide-y divide-slate-100 text-left animate-in fade-in zoom-in-95 duration-100"
+        >
           <div className="py-0.5">
             <button 
+              type="button"
               onClick={() => {
                 setIsDropdownOpen(false);
                 setIsDetailOpen(true);
               }}
-              className="flex items-center gap-2 w-full px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors text-left"
+              className="flex items-center gap-2 w-full px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors text-left cursor-pointer"
             >
               <Eye className="w-3.5 h-3.5 text-blue-500" /> Lihat Detail
             </button>
             <button 
+              type="button"
               onClick={() => {
                 setIsDropdownOpen(false);
                 setIsEditOpen(true);
               }}
-              className="flex items-center gap-2 w-full px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-amber-50 hover:text-amber-600 transition-colors text-left"
+              className="flex items-center gap-2 w-full px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-amber-50 hover:text-amber-600 transition-colors text-left cursor-pointer"
             >
               <Edit className="w-3.5 h-3.5 text-amber-500" /> Edit Risiko
             </button>
           </div>
           <div className="py-0.5">
             <button 
+              type="button"
               onClick={handleDelete}
               disabled={isDeleting}
-              className="flex items-center gap-2 w-full px-3.5 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors text-left"
+              className="flex items-center gap-2 w-full px-3.5 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors text-left cursor-pointer"
             >
               <Trash2 className="w-3.5 h-3.5 text-rose-500" /> Hapus
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ========================================================= */}
@@ -498,6 +560,13 @@ export default function RiskActionMenu({ risk }: { risk: RiskItem }) {
                         onChange={(e) => setEditDampakScore(Number(e.target.value))}
                         className="w-full accent-blue-600 cursor-pointer"
                       />
+                      <div className="mt-2 p-2 rounded-lg bg-white border border-slate-200 text-[10px] text-slate-500 space-y-1">
+                        <p className={editDampakScore === 1 ? "font-bold text-blue-700" : ""}>1: Sangat Rendah (Administrasi/plang kusam)</p>
+                        <p className={editDampakScore === 2 ? "font-bold text-blue-700" : ""}>2: Rendah (Kerugian kecil, dinas normal)</p>
+                        <p className={editDampakScore === 3 ? "font-bold text-blue-700" : ""}>3: Sedang (Sengketa batas, klaim lisan warga)</p>
+                        <p className={editDampakScore === 4 ? "font-bold text-blue-700" : ""}>4: Tinggi (Aset bernilai tinggi, sengketa hukum)</p>
+                        <p className={editDampakScore === 5 ? "font-bold text-blue-700" : ""}>5: Fatal (Disegel warga/kehilangan fisik tanah)</p>
+                      </div>
                     </div>
                     <div>
                       <label className="text-xs text-slate-600 block mb-1">
@@ -511,6 +580,13 @@ export default function RiskActionMenu({ risk }: { risk: RiskItem }) {
                         onChange={(e) => setEditPeluangScore(Number(e.target.value))}
                         className="w-full accent-blue-600 cursor-pointer"
                       />
+                      <div className="mt-2 p-2 rounded-lg bg-white border border-slate-200 text-[10px] text-slate-500 space-y-1">
+                        <p className={editPeluangScore === 1 ? "font-bold text-blue-700" : ""}>1: Sangat Jarang (Pagar keliling & patok BPN lengkap)</p>
+                        <p className={editPeluangScore === 2 ? "font-bold text-blue-700" : ""}>2: Jarang (Sangat kecil, 1x dalam 5 tahun)</p>
+                        <p className={editPeluangScore === 3 ? "font-bold text-blue-700" : ""}>3: Berkala (Lahan tidak berpagar, mulai digarap warga)</p>
+                        <p className={editPeluangScore === 4 ? "font-bold text-blue-700" : ""}>4: Sering (Tanpa patok, ahli waris berulang kali klaim)</p>
+                        <p className={editPeluangScore === 5 ? "font-bold text-blue-700" : ""}>5: Hampir Pasti (Sedang terjadi, bangunan liar berdiri)</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -579,6 +655,6 @@ export default function RiskActionMenu({ risk }: { risk: RiskItem }) {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

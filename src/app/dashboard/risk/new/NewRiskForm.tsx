@@ -276,6 +276,29 @@ export default function NewRiskForm({
               <span>3: Sedang</span>
               <span>5: Bencana / Fatal</span>
             </div>
+
+            {/* Keterangan Detail Indikator Dampak */}
+            <div className="mt-3 p-3 rounded-xl bg-white border border-slate-200/90 text-[10px] text-slate-600 space-y-1.5 shadow-2xs">
+              <div className="font-bold text-slate-700 text-[10.5px] border-b border-slate-100 pb-1 flex items-center justify-between">
+                <span>Indikator Dampak (PP 60/2008 & ISO 31000)</span>
+                <span className="text-[9.5px] font-mono font-semibold text-rose-600">Level Terpilih: {formData.skorDampak}</span>
+              </div>
+              <p className={formData.skorDampak === 1 ? "font-bold text-rose-700 bg-rose-50/80 px-1.5 py-0.5 rounded" : "text-slate-500"}>
+                <strong className="text-slate-700">1 (Sangat Rendah):</strong> Tertib administrasi minor, plang nama aset kusam/rusak kecil, kantor dinas beroperasi 100% normal.
+              </p>
+              <p className={formData.skorDampak === 2 ? "font-bold text-rose-700 bg-rose-50/80 px-1.5 py-0.5 rounded" : "text-slate-500"}>
+                <strong className="text-slate-700">2 (Rendah):</strong> Kerugian finansial kecil, tidak mengganggu operasional SKPK, tidak ada potensi gugatan hukum.
+              </p>
+              <p className={formData.skorDampak === 3 ? "font-bold text-rose-700 bg-rose-50/80 px-1.5 py-0.5 rounded" : "text-slate-500"}>
+                <strong className="text-slate-700">3 (Sedang):</strong> Sengketa batas tanah sebagian, klaim lisan warga sekitar, operasional layanan publik masih berjalan.
+              </p>
+              <p className={formData.skorDampak === 4 ? "font-bold text-rose-700 bg-rose-50/80 px-1.5 py-0.5 rounded" : "text-slate-500"}>
+                <strong className="text-slate-700">4 (Tinggi):</strong> Aset tanah bernilai tinggi terancam hilang, atau sudah masuk pengaduan hukum resmi ke pengadilan.
+              </p>
+              <p className={formData.skorDampak === 5 ? "font-bold text-rose-700 bg-rose-50/80 px-1.5 py-0.5 rounded" : "text-slate-500"}>
+                <strong className="text-slate-700">5 (Bencana / Fatal):</strong> Kantor/sekolah disegel warga, penguasaan fisik hilang total, kerugian negara miliaran rupiah.
+              </p>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -298,6 +321,29 @@ export default function NewRiskForm({
               <span>1: Sangat Jarang</span>
               <span>3: Berkala</span>
               <span>5: Hampir Pasti</span>
+            </div>
+
+            {/* Keterangan Detail Indikator Peluang */}
+            <div className="mt-3 p-3 rounded-xl bg-white border border-slate-200/90 text-[10px] text-slate-600 space-y-1.5 shadow-2xs">
+              <div className="font-bold text-slate-700 text-[10.5px] border-b border-slate-100 pb-1 flex items-center justify-between">
+                <span>Indikator Frekuensi / Peluang Kejadian</span>
+                <span className="text-[9.5px] font-mono font-semibold text-orange-600">Level Terpilih: {formData.skorPeluang}</span>
+              </div>
+              <p className={formData.skorPeluang === 1 ? "font-bold text-orange-700 bg-orange-50/80 px-1.5 py-0.5 rounded" : "text-slate-500"}>
+                <strong className="text-slate-700">1 (Sangat Jarang):</strong> Peluang hampir 0%, sertifikat asli aman, tanah berpagar keliling & patok BPN lengkap.
+              </p>
+              <p className={formData.skorPeluang === 2 ? "font-bold text-orange-700 bg-orange-50/80 px-1.5 py-0.5 rounded" : "text-slate-500"}>
+                <strong className="text-slate-700">2 (Jarang):</strong> Sangat kecil kemungkinan terjadi, perkiraan insiden hanya 1 kali dalam kurun waktu 5 tahun.
+              </p>
+              <p className={formData.skorPeluang === 3 ? "font-bold text-orange-700 bg-orange-50/80 px-1.5 py-0.5 rounded" : "text-slate-500"}>
+                <strong className="text-slate-700">3 (Berkala / Sedang):</strong> Terjadi berkala, lahan belum berpagar dan mulai digarap/ditanami warga tanpa izin.
+              </p>
+              <p className={formData.skorPeluang === 4 ? "font-bold text-orange-700 bg-orange-50/80 px-1.5 py-0.5 rounded" : "text-slate-500"}>
+                <strong className="text-slate-700">4 (Sering):</strong> Peluang tinggi, batas belum jelas, ahli waris pemilik lama berulang kali mendatangi aparat kampung.
+              </p>
+              <p className={formData.skorPeluang === 5 ? "font-bold text-orange-700 bg-orange-50/80 px-1.5 py-0.5 rounded" : "text-slate-500"}>
+                <strong className="text-slate-700">5 (Hampir Pasti / Kritis):</strong> Sedang terjadi saat ini, bangunan tempat tinggal/liar pihak ketiga sudah berdiri.
+              </p>
             </div>
           </div>
         </div>
