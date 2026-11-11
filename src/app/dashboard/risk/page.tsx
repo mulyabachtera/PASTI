@@ -139,13 +139,13 @@ export default async function RiskRegisterPage({
                     </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
-                        {risk.tanah?.assetId && (
+                        {risk.tanah?.assetId && risk.tanah.assetId !== '-' && (
                           <span className="px-1.5 py-0.5 bg-blue-50 text-blue-700 font-mono text-[10px] font-bold rounded border border-blue-200">
                             {risk.tanah.assetId}
                           </span>
                         )}
                         <span className="font-mono text-[11px] text-slate-400">
-                          {risk.tanah?.nibar}
+                          {risk.tanah?.nibar && risk.tanah.nibar !== '-' ? `NIBAR: ${risk.tanah.nibar}` : '-'}
                         </span>
                       </div>
                       <Link href={`/dashboard/tanah/${risk.idTanah}`} className="font-semibold text-slate-800 hover:text-blue-600 hover:underline line-clamp-1">

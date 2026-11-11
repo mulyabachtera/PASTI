@@ -59,7 +59,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     // Clean up data to match Prisma schema
     const updateData: any = {
       namaBarang: data.namaBarang,
-      assetId: data.assetId !== undefined ? data.assetId : undefined,
+      assetId: data.assetId !== undefined ? (data.assetId?.trim() ? data.assetId.trim() : "-") : undefined,
+      nibar: data.nibar !== undefined ? (data.nibar?.trim() ? data.nibar.trim() : "-") : undefined,
       kodeTanah: data.kodeTanah !== undefined ? data.kodeTanah : (data.kodeBarang !== undefined ? data.kodeBarang : undefined),
       kodeBarang: data.kodeTanah !== undefined ? data.kodeTanah : (data.kodeBarang !== undefined ? data.kodeBarang : undefined),
       pengelola: data.pengelola !== undefined ? data.pengelola : undefined,

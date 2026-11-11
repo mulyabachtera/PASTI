@@ -303,7 +303,7 @@ export default function RiskActionMenu({ risk }: { risk: RiskItem }) {
                   </span>
                   <h4 className="font-bold text-slate-800 text-sm">{risk.tanah?.namaBarang || "Aset Tidak Terhubung"}</h4>
                   <p className="text-xs text-slate-500 font-mono mt-0.5">
-                    NIBAR: {risk.tanah?.nibar || "-"} {risk.tanah?.assetId ? `• ID: ${risk.tanah.assetId}` : ""}
+                    NIBAR: {risk.tanah?.nibar && risk.tanah.nibar !== '-' ? risk.tanah.nibar : "-"} {risk.tanah?.assetId && risk.tanah.assetId !== '-' ? `• ID: ${risk.tanah.assetId}` : ""}
                   </p>
                 </div>
                 {risk.idTanah && (

@@ -32,6 +32,7 @@ export default function NewTanahPage() {
   const [formData, setFormData] = useState({
     // Identitas Aset (Ditempatkan sebelum Nama Aset)
     assetId: "",
+    nibar: "",
     kodeTanah: "",
     namaBarang: "",
     kodeLokasi: "",
@@ -237,19 +238,19 @@ export default function NewTanahPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* 1. Asset ID (Sebelum Nama Aset) */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-                <span>Asset ID <span className="text-slate-400 font-normal">(Opsional / Sistem Otomatis)</span></span>
-                <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-mono">Contoh: AT-0004</span>
+                <span>Asset ID <span className="text-slate-400 font-normal">(Manual / Opsional)</span></span>
+                <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-mono">Contoh: AT-0001</span>
               </label>
               <input 
                 type="text" 
                 name="assetId"
                 value={formData.assetId}
                 onChange={handleChange}
-                placeholder="Contoh: AT-0004"
+                placeholder="Contoh: AT-0001 (Kosong = '-')"
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
               />
             </div>
@@ -257,8 +258,8 @@ export default function NewTanahPage() {
             {/* 2. Kode Tanah (Sebelum Nama Aset) */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-                <span>Kode Tanah / Kode Barang</span>
-                <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">Format Permendagri</span>
+                <span>Kode Tanah / Barang</span>
+                <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">Permendagri</span>
               </label>
               <input 
                 type="text" 
@@ -270,8 +271,24 @@ export default function NewTanahPage() {
               />
             </div>
 
-            {/* 3. Nama Aset / Barang (Wajib) */}
-            <div className="space-y-1.5 md:col-span-2">
+            {/* 3. NIBAR (Nomor Induk Barang) */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
+                <span>NIBAR <span className="text-slate-400 font-normal">(Manual / Opsional)</span></span>
+                <span className="text-[10px] bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded font-mono">Nomor Induk Barang</span>
+              </label>
+              <input 
+                type="text" 
+                name="nibar"
+                value={formData.nibar}
+                onChange={handleChange}
+                placeholder="Contoh: NIBAR-001 (Kosong = '-')"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
+              />
+            </div>
+
+            {/* 4. Nama Aset / Barang (Wajib) */}
+            <div className="space-y-1.5 md:col-span-3">
               <label className="text-xs font-bold text-slate-700">
                 Nama Aset / Barang <span className="text-rose-500">*</span>
               </label>

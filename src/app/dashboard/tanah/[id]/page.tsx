@@ -123,7 +123,7 @@ export default async function DetailTanahPage({ params }: { params: Promise<{ id
           <div className="space-y-1">
             {/* Asset ID & Kode Tanah ditampilkan sebelum / di atas Nama Aset */}
             <div className="flex items-center gap-2 flex-wrap">
-              {tanah.assetId ? (
+              {tanah.assetId && tanah.assetId !== '-' ? (
                 <span className="px-2.5 py-0.5 rounded-lg text-xs font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200">
                   Asset ID: {tanah.assetId}
                 </span>
@@ -140,7 +140,7 @@ export default async function DetailTanahPage({ params }: { params: Promise<{ id
               ) : null}
 
               <span className="px-2.5 py-0.5 rounded-lg text-xs font-mono text-slate-500 bg-slate-50 border border-slate-200">
-                NIBAR: {tanah.nibar}
+                NIBAR: {tanah.nibar && tanah.nibar !== '-' ? tanah.nibar : '-'}
               </span>
 
               <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 flex items-center gap-1 print:border print:border-emerald-600">
@@ -186,7 +186,7 @@ export default async function DetailTanahPage({ params }: { params: Promise<{ id
               <div>
                 <p className="text-xs text-slate-400 mb-1">Asset ID & Kode Tanah</p>
                 <p className="font-mono font-semibold text-slate-800 text-sm">
-                  {tanah.assetId || '-'} / {tanah.kodeTanah || '-'}
+                  {(tanah.assetId && tanah.assetId !== '-' ? tanah.assetId : '-') + ' / ' + (tanah.kodeTanah || '-')}
                 </p>
               </div>
               <div>

@@ -26,9 +26,9 @@ export async function POST(request: Request) {
     }
     
     const id = uuidv4();
-    const nibar = data.nibar?.trim() || `NIBAR-${Date.now().toString().slice(-6)}`;
-    const assetId = data.assetId?.trim() || `AT-${Date.now().toString().slice(-4)}`;
-    const kodeTanah = data.kodeTanah?.trim() || data.kodeBarang?.trim() || null;
+    const nibar = data.nibar?.trim() ? data.nibar.trim() : "-";
+    const assetId = data.assetId?.trim() ? data.assetId.trim() : "-";
+    const kodeTanah = data.kodeTanah?.trim() || data.kodeBarang?.trim() || "-";
     const luas = data.luas && !isNaN(parseFloat(data.luas)) ? Math.max(0, parseFloat(data.luas)) : null;
     const nilaiPerolehan = data.nilaiPerolehan && !isNaN(parseFloat(data.nilaiPerolehan)) ? Math.max(0, parseFloat(data.nilaiPerolehan)) : null;
     const tanggalPerolehan = data.tanggalPerolehan ? new Date(data.tanggalPerolehan) : null;

@@ -320,13 +320,11 @@ export default async function MasterTanahPage({
                   return (
                     <tr key={tanah.id} className="hover:bg-slate-50/80 transition-colors">
                       <td className="px-5 py-4">
-                        {tanah.assetId ? (
-                          <span className="block font-mono text-xs font-bold text-blue-600">
-                            {tanah.assetId}
-                          </span>
-                        ) : null}
+                        <span className="block font-mono text-xs font-bold text-blue-600">
+                          {tanah.assetId && tanah.assetId !== '-' ? tanah.assetId : '-'}
+                        </span>
                         <span className="font-mono text-[11px] text-slate-400 block">
-                          {tanah.nibar}
+                          NIBAR: {tanah.nibar && tanah.nibar !== '-' ? tanah.nibar : '-'}
                         </span>
                       </td>
                       <td className="px-5 py-4">

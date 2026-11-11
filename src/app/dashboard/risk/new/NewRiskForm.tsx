@@ -122,7 +122,7 @@ export default function NewRiskForm({
               <option value="" disabled>-- Pilih Aset Tanah --</option>
               {tanahList.map(t => (
                 <option key={t.id} value={t.id}>
-                  {t.assetId ? `[${t.assetId}] ` : ''}{t.namaBarang} ({t.nibar})
+                  {t.assetId && t.assetId !== '-' ? `[${t.assetId}] ` : ''}{t.namaBarang}{t.nibar && t.nibar !== '-' ? ` (NIBAR: ${t.nibar})` : ''}
                 </option>
               ))}
             </select>

@@ -95,7 +95,7 @@ export default function LoginPage() {
             />
             <div>
               <h1 className="text-3xl font-bold tracking-tight">SIM <span className="text-blue-400">PASTI</span></h1>
-              <p className="text-xs text-slate-400 font-medium tracking-wider uppercase">Executive System</p>
+              <p className="text-xs text-slate-400 font-medium tracking-wider uppercase">BPKK Aceh Tengah</p>
             </div>
           </div>
           

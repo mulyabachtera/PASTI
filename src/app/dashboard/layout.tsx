@@ -191,7 +191,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <h1 className="text-xl font-bold tracking-tight text-white group-hover/brand:text-blue-300 transition-colors leading-tight">
                   SIM <span className="text-blue-400">PASTI</span>
                 </h1>
-                <p className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Executive System</p>
+                <p className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">BPKK Aceh Tengah</p>
               </div>
             )}
           </Link>
@@ -288,7 +288,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <h1 className="text-xl font-bold tracking-tight text-white">
                 SIM <span className="text-blue-400">PASTI</span>
               </h1>
-              <p className="text-[10px] text-slate-400 font-medium">Executive System</p>
+              <p className="text-[10px] text-slate-400 font-medium">BPKK Aceh Tengah</p>
             </div>
           </Link>
           <button 
