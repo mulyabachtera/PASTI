@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { Loader2 } from "lucide-react";
+import { Loader2, Maximize2, ArrowLeft, X } from "lucide-react";
 import { getCertificatePolygonStyle } from "@/lib/geoUtils";
 
 // Fix for default marker icons in Next.js
@@ -27,12 +27,31 @@ if (typeof window !== "undefined") {
   (window as any).L = L;
 }
 
-export default function MapComponent() {
+export interface MapComponentProps {
+  mode?: "embedded" | "standalone";
+}
+
+export default function MapComponent({ mode = "embedded" }: MapComponentProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [data, setData] = useState<{ tanah: any[]; risk: any[] } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [legendStats, setLegendStats] = useState({ hijau: 0, kuning: 0, merah: 0, total: 0 });
   const mapInstanceRef = useRef<L.Map | null>(null);
+
+  // Resize listener agar peta selalu pas saat ukuran jendela browser berubah
+  useEffect(() => {
+    const handleResize = () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.invalidateSize();
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    const timer = setTimeout(handleResize, 300);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timer);
+    };
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -226,7 +245,7 @@ export default function MapComponent() {
           </div>
 
           <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #f1f5f9; text-align: right;">
-            <a href="/dashboard/tanah/${t.id}" style="color: #2563eb; font-weight: 700; font-size: 11px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+            <a href="/dashboard/tanah/${t.id}" target="${mode === 'standalone' ? '_blank' : '_self'}" style="color: #2563eb; font-weight: 700; font-size: 11px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
               Buka Detail Aset &rarr;
             </a>
           </div>
@@ -268,20 +287,79 @@ export default function MapComponent() {
         mapInstanceRef.current = null;
       } catch (e) {}
     };
-  }, [isLoading, data]);
+  }, [isLoading, data, mode]);
 
   if (isLoading) {
     return (
-      <div className="w-full h-full flex flex-col items-center justify-center bg-slate-100 rounded-2xl">
+      <div className={mode === "standalone" ? "w-screen h-screen flex flex-col items-center justify-center bg-slate-950 text-white" : "w-full h-full flex flex-col items-center justify-center bg-slate-100 rounded-2xl min-h-[400px]"}>
         <Loader2 className="w-8 h-8 text-blue-500 animate-spin mb-4" />
-        <p className="text-slate-500 font-medium">Memuat Data Spasial...</p>
+        <p className={mode === "standalone" ? "text-slate-300 font-medium" : "text-slate-500 font-medium"}>Memuat Data Spasial...</p>
       </div>
     );
   }
 
+  const isStandalone = mode === "standalone";
+
   return (
-    <div className="w-full h-full relative rounded-2xl overflow-hidden shadow-inner border border-slate-200 z-10">
+    <div
+      className={
+        isStandalone
+          ? "w-screen h-screen overflow-hidden bg-slate-950 relative m-0 p-0"
+          : "w-full h-full relative rounded-2xl overflow-hidden shadow-inner border border-slate-200 z-10 min-h-[400px]"
+      }
+    >
+      {/* Kontainer Peta Leaflet */}
       <div ref={mapRef} className="w-full h-full min-h-[400px]" />
+
+      {/* Floating Control di Atas Peta */}
+      {isStandalone ? (
+        /* Floating Pill Khusus Mode Peta Standalone (Layar Penuh Tab Baru) */
+        <div className="absolute top-3 left-14 z-[400] flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-slate-700/80 shadow-2xl text-xs">
+          <div className="flex items-center gap-2 pr-3 border-r border-slate-700/80">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="font-bold text-white text-xs tracking-tight">
+              Live WebGIS Aset Daerah
+            </span>
+            <span className="text-[10px] text-slate-400 hidden sm:inline">
+              Kab. Aceh Tengah
+            </span>
+          </div>
+
+          <a
+            href="/dashboard"
+            className="px-2.5 py-1 text-slate-300 hover:text-white hover:bg-slate-800 rounded-xl transition-colors font-medium flex items-center gap-1.5 text-[11px]"
+            title="Buka Halaman Dashboard"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Dashboard</span>
+          </a>
+
+          <button
+            type="button"
+            onClick={() => window.close()}
+            className="px-2.5 py-1 text-rose-300 hover:text-white hover:bg-rose-600/80 rounded-xl transition-colors font-medium flex items-center gap-1 text-[11px] border border-rose-500/30 cursor-pointer"
+            title="Tutup Tab Ini"
+          >
+            <X className="w-3.5 h-3.5" />
+            <span>Tutup Tab</span>
+          </button>
+        </div>
+      ) : (
+        /* Tombol Buka Layar Penuh di Tab Baru (Untuk Mode Embedded Dashboard) */
+        <a
+          href="/peta"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute top-3 left-14 z-[400] bg-white/95 hover:bg-white text-slate-700 hover:text-blue-600 px-3 py-1.5 rounded-xl border border-slate-200/90 shadow-md font-semibold text-xs flex items-center gap-1.5 transition-all hover:scale-102 cursor-pointer backdrop-blur-xs"
+          title="Buka Peta Spasial Layar Penuh di Tab Baru"
+        >
+          <Maximize2 className="w-3.5 h-3.5 text-blue-600" />
+          <span>Layar Penuh (Tab Baru)</span>
+        </a>
+      )}
 
       {/* Floating Legend: Indikator Sertifikat Poligon */}
       <div className="absolute bottom-4 left-4 z-[400] bg-white/95 backdrop-blur-md px-3.5 py-3 rounded-2xl border border-slate-200/80 shadow-lg text-xs max-w-xs transition-all hover:bg-white">

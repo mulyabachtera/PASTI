@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { 
   TrendingUp, AlertTriangle, Activity, Map as MapIcon, 
-  ShieldAlert, ArrowUpRight, Landmark, Layers, ZoomIn, ZoomOut, X
+  ShieldAlert, ArrowUpRight, Landmark, Layers, ZoomIn, ZoomOut, X, Maximize2
 } from "lucide-react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -222,15 +222,27 @@ export default function DashboardClient({
                 Visualisasi batas poligon tanah terdaftar di atas citra satelit resolusi tinggi.
               </p>
             </div>
-            <Link
-              href="/dashboard/tanah"
-              className="text-xs font-semibold text-blue-600 hover:underline flex items-center gap-1"
-            >
-              Lihat Master Aset <ArrowUpRight className="w-3.5 h-3.5" />
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/peta"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-semibold px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-xl border border-blue-200/80 flex items-center gap-1.5 transition-colors shadow-xs"
+                title="Buka Peta Spasial Layar Penuh di Tab Baru"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span>Layar Penuh (Tab Baru)</span>
+              </Link>
+              <Link
+                href="/dashboard/tanah"
+                className="text-xs font-semibold text-slate-600 hover:text-blue-600 hover:underline flex items-center gap-1 ml-1"
+              >
+                Lihat Master Aset <ArrowUpRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
           <div className="flex-1 w-full rounded-2xl overflow-hidden relative border border-slate-100 min-h-[400px]">
-            <MapComponent />
+            <MapComponent mode="embedded" />
           </div>
         </div>
         

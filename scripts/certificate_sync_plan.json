@@ -1,0 +1,347 @@
+[
+  {
+    "src_file": "1. BPKK.pdf",
+    "dest_base": "sertifikat_01_bpkk.pdf",
+    "asset_filter": {
+      "kode": "1.3.1.01.01.04.001",
+      "name_contains": "BPKK"
+    },
+    "no_sertifikat": "01.09.02.09.4.00009",
+    "luas": 12551,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_01_bpkk.pdf",
+    "orig_size_mb": 13.7,
+    "preview_size_mb": 1.42
+  },
+  {
+    "src_file": "2. Lapangan Musara Alun.pdf",
+    "dest_base": "sertifikat_02_lapangan_musara_alun.pdf",
+    "asset_filter": {
+      "name_contains": "Musara Alun"
+    },
+    "no_sertifikat": "01.09.02.12.4.00005",
+    "luas": 55801,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_02_lapangan_musara_alun.pdf",
+    "orig_size_mb": 14.57,
+    "preview_size_mb": 1.56
+  },
+  {
+    "src_file": "3. Kantor Bupati.pdf",
+    "dest_base": "sertifikat_03_kantor_bupati.pdf",
+    "asset_filter": {
+      "name_contains": "Kantor Bupati"
+    },
+    "no_sertifikat": "01.09.01.10.4.00037",
+    "luas": 23841,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_03_kantor_bupati.pdf",
+    "orig_size_mb": 4.26,
+    "preview_size_mb": 2.79
+  },
+  {
+    "src_file": "4. pendopo.pdf",
+    "dest_base": "sertifikat_04_pendopo.pdf",
+    "asset_filter": {
+      "name_contains": "Pendopo"
+    },
+    "no_sertifikat": "01.09.01.10.4.00038",
+    "luas": 8790,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_04_pendopo.pdf",
+    "orig_size_mb": 3.89,
+    "preview_size_mb": 2.57
+  },
+  {
+    "src_file": "5. UPTD Museum (jalan mess time ruang).pdf",
+    "dest_base": "sertifikat_05_uptd_museum.pdf",
+    "asset_filter": {
+      "name_contains": "Museum"
+    },
+    "no_sertifikat": "01.09.02.07.4.00006",
+    "luas": 72670,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_05_uptd_museum.pdf",
+    "orig_size_mb": 14.7,
+    "preview_size_mb": 1.52
+  },
+  {
+    "src_file": "6. Tanah Budi luhur.pdf",
+    "dest_base": "sertifikat_06_tanah_budi_luhur.pdf",
+    "asset_filter": {
+      "name_contains": "Budi luhur"
+    },
+    "no_sertifikat": "01.09.02.07.2.00008",
+    "luas": 7929,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_06_tanah_budi_luhur.pdf",
+    "orig_size_mb": 13.39,
+    "preview_size_mb": 1.28
+  },
+  {
+    "src_file": "9. Kantor BPRS.pdf",
+    "dest_base": "sertifikat_09_kantor_bprs.pdf",
+    "asset_filter": {
+      "name_contains": "BPRS"
+    },
+    "no_sertifikat": "01.09.01.15.4.00055",
+    "luas": 1699,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_09_kantor_bprs.pdf",
+    "orig_size_mb": 3.95,
+    "preview_size_mb": 2.63
+  },
+  {
+    "src_file": "10. tanah dekranas DPMK.pdf",
+    "dest_base": "sertifikat_10_kantor_dpmk_dekranas.pdf",
+    "asset_filter": {
+      "name_contains": "DPMK"
+    },
+    "no_sertifikat": "01.09.02.14.4.00004",
+    "luas": 2000,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_10_kantor_dpmk_dekranas.pdf",
+    "orig_size_mb": 14.86,
+    "preview_size_mb": 1.53
+  },
+  {
+    "src_file": "11. Tanah bangunan Mall bale atumall baleatu.pdf",
+    "dest_base": "sertifikat_11_mall_bale_atu.pdf",
+    "asset_filter": {
+      "name_contains": "Mall bale atu"
+    },
+    "no_sertifikat": "01.09.01.13.4.00007",
+    "luas": 5169,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_11_mall_bale_atu.pdf",
+    "orig_size_mb": 3.22,
+    "preview_size_mb": 2.13
+  },
+  {
+    "src_file": "12. terminal lama.pdf",
+    "dest_base": "sertifikat_12_terminal_lama.pdf",
+    "asset_filter": {
+      "name_contains": "terminal lama bale atu"
+    },
+    "secondary_filter": {
+      "name_contains": "terminal (perhubungan)"
+    },
+    "no_sertifikat": "01.09.02.07.4.00005",
+    "luas": 5902,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_12_terminal_lama.pdf",
+    "orig_size_mb": 13.17,
+    "preview_size_mb": 1.32
+  },
+  {
+    "src_file": "14. SMP N 1.pdf",
+    "dest_base": "sertifikat_14_smpn_1_takengon.pdf",
+    "asset_filter": {
+      "name_contains": "SMPN 1"
+    },
+    "no_sertifikat": "01.09.01.10.4.00044",
+    "luas": 8412,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_14_smpn_1_takengon.pdf",
+    "orig_size_mb": 3.5,
+    "preview_size_mb": 2.26
+  },
+  {
+    "src_file": "15. DInas Kesehatan Kebayakan.pdf",
+    "dest_base": "sertifikat_15_dinas_kesehatan.pdf",
+    "asset_filter": {
+      "name_contains": "Dinas Kesehatan"
+    },
+    "no_sertifikat": "01.09.01.02.4.00011",
+    "luas": 868,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_15_dinas_kesehatan.pdf",
+    "orig_size_mb": 3.8,
+    "preview_size_mb": 1.4
+  },
+  {
+    "src_file": "16. BLUD datu beru.pdf",
+    "dest_base": "sertifikat_16_blud_datu_beru.pdf",
+    "asset_filter": {
+      "name_contains": "RSU Datu Beru",
+      "luas": 1200
+    },
+    "secondary_filter": {
+      "name_contains": "RSU Datu Beru",
+      "luas": 25770
+    },
+    "no_sertifikat": "01.09.01.02.4.00014",
+    "luas": 1200,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_16_blud_datu_beru.pdf",
+    "orig_size_mb": 4.16,
+    "preview_size_mb": 1.58
+  },
+  {
+    "src_file": "17. Paya nahu.pdf",
+    "dest_base": "sertifikat_17_dlh_paya_nahu.pdf",
+    "asset_filter": {
+      "name_contains": "Paya Nahu"
+    },
+    "no_sertifikat": "01.09.02.28.2.00001",
+    "luas": 8464,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_17_dlh_paya_nahu.pdf",
+    "orig_size_mb": 12.19,
+    "preview_size_mb": 1.15
+  },
+  {
+    "src_file": "23. Puskesmas Bebesen.pdf",
+    "dest_base": "sertifikat_23_puskesmas_bebesen.pdf",
+    "asset_filter": {
+      "name_contains": "Puskesmas Bebesen"
+    },
+    "no_sertifikat": "01.09.02.23.1.00003",
+    "luas": 1149,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_23_puskesmas_bebesen.pdf",
+    "orig_size_mb": 12.57,
+    "preview_size_mb": 1.27
+  },
+  {
+    "src_file": "24. Puskesmas Kebayakan.pdf",
+    "dest_base": "sertifikat_24_puskesmas_kebayakan.pdf",
+    "asset_filter": {
+      "name_contains": "Puskesmas Kebayakan"
+    },
+    "no_sertifikat": "01.09.02.05.2.00007",
+    "luas": 1885,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_24_puskesmas_kebayakan.pdf",
+    "orig_size_mb": 13.0,
+    "preview_size_mb": 1.21
+  },
+  {
+    "src_file": "25. Puskesmas Pegasing.pdf",
+    "dest_base": "sertifikat_25_puskesmas_pegasing.pdf",
+    "asset_filter": {
+      "name_contains": "Puskesmas Pegasing"
+    },
+    "no_sertifikat": "01.09.09.05.4.00004",
+    "luas": 2204,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_25_puskesmas_pegasing.pdf",
+    "orig_size_mb": 2.35,
+    "preview_size_mb": 0.97
+  },
+  {
+    "src_file": "27. Puskesmas Silih Nara.pdf",
+    "dest_base": "sertifikat_27_puskesmas_silih_nara.pdf",
+    "asset_filter": {
+      "name_contains": "Puskesmas Silih Nara"
+    },
+    "no_sertifikat": "01.09.04.01.1.00010",
+    "luas": 2230,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_27_puskesmas_silih_nara.pdf",
+    "orig_size_mb": 3.51,
+    "preview_size_mb": 1.3
+  },
+  {
+    "src_file": "29. Puskesmas Ketol.pdf",
+    "dest_base": "sertifikat_29_puskesmas_ketol.pdf",
+    "asset_filter": {
+      "name_contains": "Puskesmas Ketol"
+    },
+    "no_sertifikat": "01.09.17.03.1.00004",
+    "luas": 3047,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_29_puskesmas_ketol.pdf",
+    "orig_size_mb": 1.71,
+    "preview_size_mb": 0.83
+  },
+  {
+    "src_file": "30. Puskesmas Kute Panang.pdf",
+    "dest_base": "sertifikat_30_puskesmas_kute_panang.pdf",
+    "asset_filter": {
+      "name_contains": "Puskesmas Kute Panang"
+    },
+    "no_sertifikat": "01.09.17.04.2.00002",
+    "luas": 2210,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_30_puskesmas_kute_panang.pdf",
+    "orig_size_mb": 4.98,
+    "preview_size_mb": 1.26
+  },
+  {
+    "src_file": "33. Puskesmas Bies II.pdf",
+    "dest_base": "sertifikat_33_puskesmas_bies.pdf",
+    "asset_filter": {
+      "name_contains": "Puskesmas Bies"
+    },
+    "no_sertifikat": "01.09.09.01.4.00002",
+    "luas": 400,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_33_puskesmas_bies.pdf",
+    "orig_size_mb": 2.17,
+    "preview_size_mb": 0.99
+  },
+  {
+    "src_file": "35. Puskesmas Atulintang.pdf",
+    "dest_base": "sertifikat_35_puskesmas_atu_lintang.pdf",
+    "asset_filter": {
+      "name_contains": "Puskesmas Atu Lintang"
+    },
+    "no_sertifikat": "01.09.18.03.1.00003",
+    "luas": 4318,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_35_puskesmas_atu_lintang.pdf",
+    "orig_size_mb": 1.74,
+    "preview_size_mb": 1.53
+  },
+  {
+    "src_file": "36. Puskesmas rusip.pdf",
+    "dest_base": "sertifikat_36_puskesmas_rusip.pdf",
+    "asset_filter": {
+      "name_contains": "Puskesmas Rusip"
+    },
+    "no_sertifikat": "01.09.21.01.1.00005",
+    "luas": 3674,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_36_puskesmas_rusip.pdf",
+    "orig_size_mb": 2.01,
+    "preview_size_mb": 1.28
+  },
+  {
+    "src_file": "40. dermaga dedalu.pdf",
+    "dest_base": "sertifikat_40_dermaga_dedalu.pdf",
+    "asset_filter": {
+      "name_contains": "Lukup Penalam"
+    },
+    "no_sertifikat": "01.09.01.12.4.00002",
+    "luas": 7991,
+    "status_hak": "Hak Pakai",
+    "status_legalitas": "Sertifikat",
+    "relative_url": "/uploads/certificates/sertifikat_40_dermaga_dedalu.pdf",
+    "orig_size_mb": 4.43,
+    "preview_size_mb": 1.1
+  }
+]
