@@ -122,21 +122,17 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Return as JSON with Base64 payload (Bebas auto-download IDM)
-    return NextResponse.json(
-      {
-        success: true,
-        data: buffer.toString("base64"),
-        size: buffer.length,
+    // Kembalikan stream biner langsung (C++ native arrayBuffer di browser, 100x lebih cepat dari base64 JSON)
+    return new NextResponse(new Uint8Array(buffer), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": "inline",
+        "Content-Length": buffer.length.toString(),
+        "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800",
+        "X-Content-Type-Options": "nosniff"
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "private, no-cache, no-store, must-revalidate",
-          "X-Content-Type-Options": "nosniff"
-        },
-      }
-    );
+    });
   } catch (err: any) {
     console.error("API docs/stream error:", err);
     return NextResponse.json(

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
+import { parseFotoList } from '@/lib/photoUtils';
 
 export async function GET() {
   try {
@@ -76,7 +77,11 @@ export async function GET() {
       escapeCSV(a.kategoriRisiko || '-'),
       escapeCSV(a.prioritasTindakan || '-'),
       escapeCSV(a.dokumenSertifikat ? `${process.env.NEXTAUTH_URL || ''}${a.dokumenSertifikat}` : '-'),
-      escapeCSV(a.fotoAset ? `${process.env.NEXTAUTH_URL || ''}${a.fotoAset}` : '-'),
+      escapeCSV(
+        parseFotoList(a.fotoAset).length > 0 
+          ? parseFotoList(a.fotoAset).map(p => `${process.env.NEXTAUTH_URL || ''}${p}`).join('; ') 
+          : '-'
+      ),
       escapeCSV(a.createdAt ? new Date(a.createdAt).toISOString().split('T')[0] : '-'),
     ].join(','));
 

@@ -75,7 +75,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
       asalPerolehan: data.asalPerolehan || null,
       nilaiPerolehan,
       dokumenSertifikat: data.dokumenSertifikat !== undefined ? data.dokumenSertifikat : undefined,
-      fotoAset: data.fotoAset !== undefined ? data.fotoAset : undefined,
+      fotoAset: data.fotoAset !== undefined 
+        ? (Array.isArray(data.fotoAset) ? JSON.stringify(data.fotoAset) : data.fotoAset) 
+        : undefined,
       papanAset: pAset,
       batasBidang: bBidang,
       pagarPengamanan: pPagar,

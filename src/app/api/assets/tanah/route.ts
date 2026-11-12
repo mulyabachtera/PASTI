@@ -33,6 +33,11 @@ export async function POST(request: Request) {
     const nilaiPerolehan = data.nilaiPerolehan && !isNaN(parseFloat(data.nilaiPerolehan)) ? Math.max(0, parseFloat(data.nilaiPerolehan)) : null;
     const tanggalPerolehan = data.tanggalPerolehan ? new Date(data.tanggalPerolehan) : null;
 
+    // Format aman fotoAset (Mendukung JSON array string atau array objek)
+    const fotoAsetVal = Array.isArray(data.fotoAset)
+      ? JSON.stringify(data.fotoAset)
+      : (typeof data.fotoAset === 'string' && data.fotoAset.trim() ? data.fotoAset.trim() : null);
+
     // Parameter Fisik (0 - 2)
     const papanAset = Number(data.papanAset ?? 0);
     const batasBidang = Number(data.batasBidang ?? 0);
@@ -83,7 +88,7 @@ export async function POST(request: Request) {
           ${id}, ${nibar}, ${assetId}, ${kodeTanah}, ${data.namaBarang || 'Aset Tanah Baru'}, ${data.kodeLokasi || null}, ${kodeTanah},
           ${pengelola}, ${kecamatan}, ${kampung}, ${data.statusHak || 'Belum Terverifikasi'}, ${luas},
           ${data.statusLegalitas || null}, ${data.noSertifikat || null}, ${data.alamatLokasi || null}, ${data.asalPerolehan || null},
-          ${nilaiPerolehan}, ${tanggalPerolehan}, ${data.dokumenSertifikat || null}, ${data.fotoAset || null},
+          ${nilaiPerolehan}, ${tanggalPerolehan}, ${data.dokumenSertifikat || null}, ${fotoAsetVal},
           ${papanAset}, ${batasBidang}, ${pagarPengamanan}, ${statusPenguasaan}, ${pemanfaatan}, ${permasalahan},
           ${risk.skorAdministrasi}, ${risk.skorLegal}, ${risk.skorFisik}, ${risk.skorPenguasaan}, ${risk.skorSengketa}, ${risk.skorStrategis},
           ${risk.totalSkor}, ${risk.kategoriRisiko}, ${risk.prioritasTindakan},
@@ -114,7 +119,7 @@ export async function POST(request: Request) {
           nilaiPerolehan,
           tanggalPerolehan,
           dokumenSertifikat: data.dokumenSertifikat || null,
-          fotoAset: data.fotoAset || null,
+          fotoAset: fotoAsetVal,
           papanAset,
           batasBidang,
           pagarPengamanan,

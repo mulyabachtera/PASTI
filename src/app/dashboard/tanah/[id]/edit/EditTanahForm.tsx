@@ -12,6 +12,7 @@ import dynamic from "next/dynamic";
 import LiveRiskCard from "@/components/dashboard/LiveRiskCard";
 import { calculatePolygonArea, parseCoordinateText, formatArea } from "@/lib/geoUtils";
 import { compressImage } from "@/lib/imageCompressor";
+import { parseFotoList, serializeFotoList } from "@/lib/photoUtils";
 
 const FormMapComponent = dynamic(() => import("../../new/FormMapComponent"), { ssr: false });
 
@@ -20,6 +21,7 @@ export default function EditTanahForm({ tanah }: { tanah: any }) {
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingDoc, setIsUploadingDoc] = useState(false);
   const [isUploadingFoto, setIsUploadingFoto] = useState(false);
+  const [fotoList, setFotoList] = useState<string[]>(() => parseFotoList(tanah.fotoAset));
   
   // State Spasial & Kalkulasi Luas Terintegrasi
   const initialGeo = tanah.geojson 
@@ -140,22 +142,15 @@ export default function EditTanahForm({ tanah }: { tanah: any }) {
     setFormData(prev => ({ ...prev, luas: area.toString() }));
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "dokumenSertifikat" | "fotoAset") => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "dokumenSertifikat") => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const isDoc = field === "dokumenSertifikat";
-    if (isDoc) setIsUploadingDoc(true);
-    else setIsUploadingFoto(true);
+    setIsUploadingDoc(true);
 
     try {
-      let fileToUpload = file;
-      if (!isDoc && file.type.startsWith('image/')) {
-        fileToUpload = await compressImage(file);
-      }
-
       const data = new FormData();
-      data.append("file", fileToUpload);
+      data.append("file", file);
 
       const res = await fetch("/api/upload", {
         method: "POST",
@@ -169,9 +164,75 @@ export default function EditTanahForm({ tanah }: { tanah: any }) {
     } catch (err: any) {
       alert(err.message || "Gagal mengunggah berkas.");
     } finally {
-      if (isDoc) setIsUploadingDoc(false);
-      else setIsUploadingFoto(false);
+      setIsUploadingDoc(false);
     }
+  };
+
+  /**
+   * Handler upload multi-foto aset (Maksimal 5 foto) dengan auto-kompresi gambar
+   */
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const remainingSlots = 5 - fotoList.length;
+    if (remainingSlots <= 0) {
+      alert("Batas maksimal 5 foto telah tercapai. Hapus salah satu foto terlebih dahulu untuk mengunggah yang baru.");
+      e.target.value = "";
+      return;
+    }
+
+    const filesToUpload = files.slice(0, remainingSlots);
+    if (files.length > remainingSlots) {
+      alert(`Anda memilih ${files.length} foto, namun slot yang tersisa hanya ${remainingSlots}. Hanya ${remainingSlots} foto pertama yang akan diproses.`);
+    }
+
+    setIsUploadingFoto(true);
+
+    try {
+      const uploadedUrls: string[] = [];
+      for (const file of filesToUpload) {
+        let fileToUpload = file;
+        if (file.type.startsWith("image/")) {
+          fileToUpload = await compressImage(file);
+        }
+
+        const data = new FormData();
+        data.append("file", fileToUpload);
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: data,
+        });
+
+        if (!res.ok) throw new Error("Gagal mengunggah salah satu foto");
+
+        const json = await res.json();
+        if (json.url) {
+          uploadedUrls.push(json.url);
+        }
+      }
+
+      setFotoList(prev => [...prev, ...uploadedUrls].slice(0, 5));
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "Gagal mengunggah beberapa foto.");
+    } finally {
+      setIsUploadingFoto(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleRemovePhoto = (idx: number) => {
+    setFotoList(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleSetMainPhoto = (idx: number) => {
+    setFotoList(prev => {
+      const target = prev[idx];
+      const others = prev.filter((_, i) => i !== idx);
+      return [target, ...others];
+    });
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -188,11 +249,13 @@ export default function EditTanahForm({ tanah }: { tanah: any }) {
     e.preventDefault();
     setIsSaving(true);
     try {
+      const serializedPhotos = serializeFotoList(fotoList);
       const res = await fetch(`/api/assets/tanah/${tanah.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
+          fotoAset: serializedPhotos,
           luas: formData.luas ? parseFloat(formData.luas as string) : null,
           nilaiPerolehan: formData.nilaiPerolehan ? parseFloat(formData.nilaiPerolehan as string) : null,
           tanggalPerolehan: formData.tanggalPerolehan ? new Date(formData.tanggalPerolehan).toISOString() : null,
@@ -201,7 +264,7 @@ export default function EditTanahForm({ tanah }: { tanah: any }) {
       });
 
       if (res.ok) {
-        alert("Data aset, batas spasial, dan kalkulasi luas berhasil diperbarui!");
+        alert("Data aset, galeri foto, batas spasial, dan kalkulasi luas berhasil diperbarui!");
         router.push(`/dashboard/tanah/${tanah.id}`);
         router.refresh();
       } else {
@@ -896,56 +959,91 @@ export default function EditTanahForm({ tanah }: { tanah: any }) {
               )}
             </div>
 
-            {/* Upload Foto Fisik Aset */}
+            {/* Upload Foto Fisik Aset (Maksimal 5 Foto) */}
             <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
-              <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
-                <ImageIcon className="w-3.5 h-3.5 text-indigo-600" /> Foto Fisik Aset (JPG / PNG)
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+                  <ImageIcon className="w-3.5 h-3.5 text-indigo-600" /> Foto Fisik Aset Lapangan (Maks. 5 Foto)
+                </label>
+                <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
+                  {fotoList.length} / 5 Foto
+                </span>
+              </div>
 
-              {formData.fotoAset ? (
-                <div className="relative group rounded-xl overflow-hidden border border-slate-200 h-28 bg-slate-100 flex items-center justify-center">
-                  <img 
-                    src={formData.fotoAset} 
-                    alt="Preview Foto Aset" 
-                    className="w-full h-full object-cover" 
-                  />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                    <a 
-                      href={formData.fotoAset} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="px-2.5 py-1 bg-white/90 rounded-lg text-xs font-medium text-slate-800 hover:bg-white flex items-center gap-1"
-                    >
-                      <ExternalLink className="w-3 h-3" /> Buka
-                    </a>
-                    <button 
-                      type="button" 
-                      onClick={() => setFormData(prev => ({ ...prev, fotoAset: "" }))}
-                      className="p-1.5 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors"
-                      title="Hapus foto"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+              {/* Grid Foto yang telah diunggah */}
+              {fotoList.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  {fotoList.map((url, idx) => (
+                    <div key={idx} className="relative group rounded-xl overflow-hidden border border-slate-200 h-24 bg-slate-900 flex items-center justify-center">
+                      <img 
+                        src={url} 
+                        alt={`Foto ${idx + 1}`} 
+                        className="w-full h-full object-cover" 
+                      />
+                      {/* Badge Foto Utama */}
+                      {idx === 0 && (
+                        <span className="absolute top-1 left-1 bg-amber-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow-xs z-10">
+                          Utama
+                        </span>
+                      )}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 p-1">
+                        <a 
+                          href={url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="p-1.5 bg-white/90 text-slate-800 rounded-lg hover:bg-white transition-colors"
+                          title="Lihat Penuh"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                        {idx > 0 && (
+                          <button 
+                            type="button" 
+                            onClick={() => handleSetMainPhoto(idx)}
+                            className="p-1.5 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors"
+                            title="Jadikan Foto Utama"
+                          >
+                            <Layers className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                        <button 
+                          type="button" 
+                          onClick={() => handleRemovePhoto(idx)}
+                          className="p-1.5 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors"
+                          title="Hapus foto"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ) : (
+              )}
+
+              {/* Tombol Unggah Foto (jika < 5) */}
+              {fotoList.length < 5 && (
                 <label className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-slate-200 hover:border-indigo-400 bg-white rounded-xl cursor-pointer transition-colors group">
                   <input 
                     type="file" 
                     className="hidden" 
                     accept="image/*"
-                    onChange={(e) => handleFileUpload(e, "fotoAset")}
+                    multiple
+                    onChange={handlePhotoUpload}
                     disabled={isUploadingFoto}
                   />
                   {isUploadingFoto ? (
                     <div className="flex items-center gap-2 text-xs text-indigo-600 font-medium">
-                      <Loader2 className="w-4 h-4 animate-spin" /> Mengunggah foto...
+                      <Loader2 className="w-4 h-4 animate-spin" /> Mengompres & mengunggah foto...
                     </div>
                   ) : (
                     <>
                       <ImageIcon className="w-6 h-6 text-slate-400 group-hover:text-indigo-500 mb-1 transition-colors" />
-                      <span className="text-xs font-semibold text-slate-600 group-hover:text-indigo-600">Pilih Foto Fisik Lapangan</span>
-                      <span className="text-[10px] text-slate-400 mt-0.5">Format JPG, PNG, atau WEBP</span>
+                      <span className="text-xs font-semibold text-slate-600 group-hover:text-indigo-600">
+                        {fotoList.length === 0 ? "Pilih Foto Fisik Lapangan" : "+ Tambah Foto Lainnya"}
+                      </span>
+                      <span className="text-[10px] text-slate-400 mt-0.5 text-center">
+                        Dapat pilih beberapa foto (Maks. 5 foto, JPG/PNG/WEBP)
+                      </span>
                     </>
                   )}
                 </label>
