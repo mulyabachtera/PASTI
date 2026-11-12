@@ -328,14 +328,14 @@ export default function NewTanahPage() {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
                 <span>Asset ID <span className="text-slate-400 font-normal">(Manual / Opsional)</span></span>
-                <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-mono">Contoh: AT-0001</span>
+                <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded font-mono">ID SIMDA / KIB</span>
               </label>
               <input 
                 type="text" 
                 name="assetId"
                 value={formData.assetId}
                 onChange={handleChange}
-                placeholder="Contoh: AT-0001 (Kosong = '-')"
+                placeholder="Contoh: 120111043200000000000019901310101040010000001 (Kosong = '-')"
                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-mono"
               />
             </div>

@@ -124,7 +124,7 @@ export default async function DetailTanahPage({ params }: { params: Promise<{ id
             {/* Asset ID & Kode Tanah ditampilkan sebelum / di atas Nama Aset */}
             <div className="flex items-center gap-2 flex-wrap">
               {tanah.assetId && tanah.assetId !== '-' ? (
-                <span className="px-2.5 py-0.5 rounded-lg text-xs font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                <span className="px-2.5 py-0.5 rounded-lg text-xs font-mono font-bold bg-blue-50 text-blue-700 border border-blue-200 break-all">
                   Asset ID: {tanah.assetId}
                 </span>
               ) : (
@@ -185,7 +185,7 @@ export default async function DetailTanahPage({ params }: { params: Promise<{ id
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <p className="text-xs text-slate-400 mb-1">Asset ID & Kode Tanah</p>
-                <p className="font-mono font-semibold text-slate-800 text-sm">
+                <p className="font-mono font-semibold text-slate-800 text-sm break-all">
                   {(tanah.assetId && tanah.assetId !== '-' ? tanah.assetId : '-') + ' / ' + (tanah.kodeTanah || '-')}
                 </p>
               </div>

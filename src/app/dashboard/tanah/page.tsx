@@ -1,12 +1,11 @@
 import prisma from '@/lib/prisma';
 import { 
-  Map, Plus, FileText, Clock, CheckCircle2, XCircle, FileCheck, Filter, X 
+  Map, Plus, FileCheck, Filter, X 
 } from 'lucide-react';
 import Link from 'next/link';
-import ActionMenu from './ActionMenu';
 import { DEMO_MODE } from '@/lib/demoConfig';
 import FasePlaceholder from '@/components/dashboard/FasePlaceholder';
-import TableSearchInput from '@/components/dashboard/TableSearchInput';
+import TanahTableClient from './TanahTableClient';
 import { calculateAutomatedRisk } from '@/lib/riskCalculator';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -107,8 +106,16 @@ export default async function MasterTanahPage({
   const userRole = (session?.user as { role?: string })?.role;
 
   // Fetch data from DB directly in Server Component
-  const allTanahList = await prisma.tanah.findMany({
-    orderBy: { createdAt: 'desc' }
+  const allTanahList = await prisma.tanah.findMany();
+
+  // Default urutan: Asset ID terendah (asc), data tanpa Asset ID di paling bawah
+  allTanahList.sort((a, b) => {
+    const hasA = Boolean(a.assetId && a.assetId.trim() !== '' && a.assetId !== '-');
+    const hasB = Boolean(b.assetId && b.assetId.trim() !== '' && b.assetId !== '-');
+    if (!hasA && hasB) return 1;
+    if (hasA && !hasB) return -1;
+    if (!hasA && !hasB) return (a.namaBarang || '').localeCompare(b.namaBarang || '', 'id');
+    return (a.assetId || '').localeCompare(b.assetId || '', undefined, { numeric: true });
   });
 
   const pendingCount = allTanahList.filter((t) => t.statusVerifikasi === 'MENUNGGU_VERIFIKASI').length;
@@ -267,160 +274,12 @@ export default async function MasterTanahPage({
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-center bg-slate-50/50">
-          <TableSearchInput
-            placeholder="Cari Asset ID, NIBAR, atau Nama Aset..."
-            initialValue={resolvedSearchParams?.q || ''}
-            accentColor="blue"
-          />
-          <div className="flex gap-2 w-full sm:w-auto">
-            <a 
-              href="/api/export/tanah"
-              download
-              className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-300 flex items-center gap-2 transition-colors shadow-xs"
-            >
-              <FileText className="w-4 h-4 text-emerald-600" /> Export CSV (Excel)
-            </a>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-600">
-            <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200 text-xs uppercase tracking-wider">
-              <tr>
-                <th className="px-5 py-3.5">Asset ID / NIBAR</th>
-                <th className="px-5 py-3.5">Nama Aset & Kodefikasi</th>
-                <th className="px-5 py-3.5">Luas (m²)</th>
-                <th className="px-5 py-3.5">Status Hak & Legalitas</th>
-                <th className="px-5 py-3.5">Status Verifikasi</th>
-                <th className="px-5 py-3.5">
-                  {filterDimensi && DIMENSION_META[filterDimensi] && filterDimensi !== 'all'
-                    ? `Skor Dimensi & Risiko`
-                    : `Tingkat Risiko`}
-                </th>
-                <th className="px-5 py-3.5 text-center">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {tanahList.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
-                    Tidak ada data aset tanah yang sesuai dengan filter grafik ini.
-                  </td>
-                </tr>
-              ) : (
-                tanahList.map((tanah) => {
-                  const dimScores = getDimensionScores(tanah);
-                  const activeDimScore =
-                    filterDimensi && filterDimensi !== 'all' && filterDimensi in dimScores
-                      ? dimScores[filterDimensi as keyof typeof dimScores]
-                      : null;
-
-                  return (
-                    <tr key={tanah.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="px-5 py-4">
-                        <span className="block font-mono text-xs font-bold text-blue-600">
-                          {tanah.assetId && tanah.assetId !== '-' ? tanah.assetId : '-'}
-                        </span>
-                        <span className="font-mono text-[11px] text-slate-400 block">
-                          NIBAR: {tanah.nibar && tanah.nibar !== '-' ? tanah.nibar : '-'}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        {tanah.kodeTanah && (
-                          <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-100 text-slate-600 border border-slate-200 mb-1">
-                            {tanah.kodeTanah}
-                          </span>
-                        )}
-                        <Link
-                          href={`/dashboard/tanah/${tanah.id}`}
-                          className="font-semibold text-slate-800 hover:text-blue-600 hover:underline leading-snug block"
-                        >
-                          {tanah.namaBarang}
-                        </Link>
-                        <p className="text-xs text-slate-400 mt-0.5">{tanah.alamatLokasi || tanah.kodeLokasi || '-'}</p>
-                      </td>
-                      <td className="px-5 py-4 font-medium text-slate-700">
-                        {tanah.luas ? `${tanah.luas.toLocaleString('id-ID')} m²` : '-'}
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          {tanah.statusHak || 'Belum Terverifikasi'}
-                        </span>
-                        <p className="text-[11px] text-slate-400 mt-1">{tanah.statusLegalitas || '-'}</p>
-                      </td>
-                      <td className="px-5 py-4">
-                        {tanah.statusVerifikasi === 'MENUNGGU_VERIFIKASI' ? (
-                          <div>
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
-                              <Clock className="w-3 h-3 text-amber-600" /> Menunggu
-                            </span>
-                            {tanah.inputBy && (
-                              <span className="text-[10px] text-slate-400 block mt-0.5 font-mono">
-                                Oleh: {tanah.inputBy}
-                              </span>
-                            )}
-                          </div>
-                        ) : tanah.statusVerifikasi === 'DITOLAK' ? (
-                          <div>
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300">
-                              <XCircle className="w-3 h-3 text-rose-600" /> Ditolak
-                            </span>
-                            {tanah.catatanVerifikasi && (
-                              <span className="text-[10px] text-rose-500 block mt-0.5 truncate max-w-[130px]" title={tanah.catatanVerifikasi}>
-                                {tanah.catatanVerifikasi}
-                              </span>
-                            )}
-                          </div>
-                        ) : (
-                          <div>
-                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                              <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Terverifikasi
-                            </span>
-                            {tanah.verifiedBy && (
-                              <span className="text-[10px] text-slate-400 block mt-0.5 font-mono">
-                                Oleh: {tanah.verifiedBy}
-                              </span>
-                            )}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-5 py-4">
-                        {activeDimScore !== null && (
-                          <div className="mb-1.5">
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold border ${getDimScoreBadge(activeDimScore)}`}>
-                              Skor {filterDimensi.charAt(0).toUpperCase() + filterDimensi.slice(1)}: {activeDimScore}/5
-                            </span>
-                          </div>
-                        )}
-                        <div className="flex items-center gap-1.5">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-bold border ${getRiskBadge(tanah.kategoriRisiko)}`}>
-                            {tanah.kategoriRisiko || 'Rendah'}
-                          </span>
-                          {tanah.totalSkorRisiko && (
-                            <span className="text-[11px] font-mono text-slate-400">
-                              ({tanah.totalSkorRisiko}/30)
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[11px] text-slate-500 mt-0.5">{tanah.prioritasTindakan || 'Monitoring'}</p>
-                      </td>
-                      <td className="px-5 py-4 text-center">
-                        <ActionMenu id={tanah.id} />
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-        
-        <div className="p-4 border-t border-slate-200 flex items-center justify-between text-sm text-slate-500 bg-slate-50/50">
-          <p>Menampilkan {tanahList.length} dari {allTanahList.length} aset terdaftar</p>
-        </div>
-      </div>
+      <TanahTableClient
+        initialData={tanahList as any}
+        allCount={allTanahList.length}
+        filterDimensi={filterDimensi}
+        searchQuery={resolvedSearchParams?.q || ''}
+      />
     </div>
   );
 }
