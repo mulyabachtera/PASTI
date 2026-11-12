@@ -21,6 +21,6 @@ jobs:
             npm install
             npx prisma generate
             npx prisma db push
+            node scripts/sync_production_db.js
             npm run build
             pm2 restart sim-pasti
-
