@@ -211,7 +211,7 @@ export function getCertificatePolygonStyle(
       fillOpacity: 0.45,
       weight: 3,
       category: "kuning",
-      label: "Dalam Pengurusan BPN",
+      label: "Dalam Pengurusan",
       badgeClass: "bg-amber-100 text-amber-800 border-amber-300"
     };
   }
@@ -236,7 +236,7 @@ export function getCertificatePolygonStyle(
       fillOpacity: 0.45,
       weight: 3,
       category: "merah",
-      label: isDispute ? "Sengketa / Bermasalah" : "Belum Ada Sertifikat",
+      label: isDispute ? "Sengketa / Bermasalah" : "Belum Bersertifikat",
       badgeClass: "bg-rose-100 text-rose-800 border-rose-300"
     };
   }
@@ -270,7 +270,7 @@ export function getCertificatePolygonStyle(
     fillOpacity: 0.45,
     weight: 3,
     category: "merah",
-    label: "Belum Ada Sertifikat",
+    label: "Belum Bersertifikat",
     badgeClass: "bg-rose-100 text-rose-800 border-rose-300"
   };
 }

@@ -212,10 +212,8 @@ export default function MapComponent({ mode = "embedded" }: MapComponentProps) {
       const popupContent = `
         <div style="font-family: inherit; min-width: 230px; padding: 2px;">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px;">
-            <span style="font-size: 10px; font-weight: 700; color: #475569; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0;">
-              ${(t.assetId && t.assetId !== '-') ? t.assetId : ((t.nibar && t.nibar !== '-') ? t.nibar : (t.kodeTanah || 'Aset Tanah'))}
-            </span>
-            <span style="font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 9999px; background: ${badgeBg}; color: ${badgeTextColor}; border: 1px solid ${badgeBorder};">
+            <span style="font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 9999px; background: ${badgeBg}; color: ${badgeTextColor}; border: 1px solid ${badgeBorder}; display: inline-flex; align-items: center; gap: 5px;">
+              <span style="width: 6px; height: 6px; border-radius: 9999px; background: ${certStyle.color};"></span>
               ${certStyle.label}
             </span>
           </div>
