@@ -68,10 +68,49 @@ export async function POST(req: Request) {
 
     await writeFile(fullPath, buffer);
 
-    // Kembalikan URL publik yang aman
+    // 4. Buat / Simpan Versi Pratinjau Cepat Web (Khusus PDF untuk Fast Web Preview)
+    let previewUrl: string | null = null;
+    if (ext === '.pdf') {
+      const previewFilename = uniqueFilename.replace(/\.pdf$/i, '_preview.pdf');
+      const previewPath = join(uploadDir, previewFilename);
+
+      // A. Coba optimasi server via Ghostscript jika tersedia
+      let gsSuccess = false;
+      try {
+        const { exec } = await import('child_process');
+        await new Promise((resolve, reject) => {
+          exec(
+            `gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${previewPath}" "${fullPath}"`,
+            { timeout: 15000 },
+            (err) => (err ? reject(err) : resolve(true))
+          );
+        });
+        previewUrl = `/uploads/${previewFilename}`;
+        gsSuccess = true;
+      } catch {
+        // Ghostscript tidak tersedia di sistem ini
+      }
+
+      // B. Fallback: Gunakan berkas preview yang dikirim dari browser client
+      if (!gsSuccess) {
+        const previewFile: File | null = data.get('previewFile') as unknown as File;
+        if (previewFile) {
+          try {
+            const previewBytes = await previewFile.arrayBuffer();
+            await writeFile(previewPath, Buffer.from(previewBytes));
+            previewUrl = `/uploads/${previewFilename}`;
+          } catch (err) {
+            console.warn('Gagal menyimpan berkas pratinjau client:', err);
+          }
+        }
+      }
+    }
+
+    // Kembalikan URL publik yang aman (url utama tetap berkas asli original)
     return NextResponse.json({ 
       success: true, 
       url: `/uploads/${uniqueFilename}`,
+      previewUrl,
       filename: uniqueFilename,
       size: file.size
     });

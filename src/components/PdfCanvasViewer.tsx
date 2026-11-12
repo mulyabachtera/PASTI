@@ -5,53 +5,10 @@ import {
   Loader2, 
   ZoomIn, 
   ZoomOut, 
-  ChevronLeft, 
-  ChevronRight, 
   AlertCircle, 
-  FileText, 
-  Layers, 
-  File, 
-  Maximize2 
+  FileText 
 } from "lucide-react";
-
-// Dynamic client loader for local PDF.js to bypass Turbopack / SSR canvas dependency
-async function getPdfJsLib(): Promise<any> {
-  if (typeof window === "undefined") return null;
-  if ((window as any).pdfjsLib) {
-    (window as any).pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
-    return (window as any).pdfjsLib;
-  }
-
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector('script[src="/pdf.min.js"]') as HTMLScriptElement | null;
-    if (existing) {
-      if ((window as any).pdfjsLib) {
-        (window as any).pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
-        return resolve((window as any).pdfjsLib);
-      }
-      existing.addEventListener("load", () => {
-        const lib = (window as any).pdfjsLib;
-        if (lib) lib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
-        resolve(lib);
-      });
-      existing.addEventListener("error", reject);
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = "/pdf.min.js";
-    script.async = true;
-    script.onload = () => {
-      const lib = (window as any).pdfjsLib;
-      if (lib) {
-        lib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
-      }
-      resolve(lib);
-    };
-    script.onerror = () => reject(new Error("Gagal menginisialisasi modul pembaca PDF"));
-    document.head.appendChild(script);
-  });
-}
+import { getPdfJsLib } from "@/lib/pdfOptimizer";
 
 /**
  * Komponen individual untuk merender satu halaman PDF ke elemen <canvas>.
@@ -165,12 +122,12 @@ export default function PdfCanvasViewer({ url, fullHeight = false }: PdfCanvasVi
   const [pdfDoc, setPdfDoc] = useState<any>(null);
   const [pageNum, setPageNum] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [scale, setScale] = useState(1.15);
+  
+  // Default zoom ditetapkan ke 100% (1.0) sesuai instruksi pengguna
+  const [scale, setScale] = useState(1.0);
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Mode Tampilan: "scroll" (Semua Halaman) atau "single" (Per Halaman)
-  const [viewMode, setViewMode] = useState<"scroll" | "single">("scroll");
 
   useEffect(() => {
     let isCancelled = false;
@@ -229,11 +186,9 @@ export default function PdfCanvasViewer({ url, fullHeight = false }: PdfCanvasVi
   const handleJumpToPage = (targetPage: number) => {
     const page = Math.max(1, Math.min(totalPages, targetPage));
     setPageNum(page);
-    if (viewMode === "scroll") {
-      const el = document.getElementById(`pdf-page-${page}`);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+    const el = document.getElementById(`pdf-page-${page}`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -247,44 +202,16 @@ export default function PdfCanvasViewer({ url, fullHeight = false }: PdfCanvasVi
         <div className="flex items-center gap-2.5">
           <FileText className="w-4 h-4 text-rose-400 shrink-0" />
           <span className="font-semibold text-slate-100 hidden sm:inline">Pratinjau Sertifikat Asli</span>
-          <span className="bg-slate-700/80 text-slate-200 px-2 py-0.5 rounded text-[11px] font-mono">
+          <span className="bg-slate-700/80 text-slate-200 px-2.5 py-0.5 rounded text-[11px] font-mono">
             {totalPages} Halaman
           </span>
         </div>
 
-        {/* View Mode Toggle & Page Selector & Zoom Controls */}
-        <div className="flex flex-wrap items-center gap-2">
-          {/* View Mode Selector: Semua Halaman (Scroll) vs Per Halaman */}
-          <div className="flex items-center bg-slate-900/80 p-0.5 rounded-lg border border-slate-700">
-            <button
-              type="button"
-              onClick={() => setViewMode("scroll")}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1.5 transition-colors ${
-                viewMode === "scroll"
-                  ? "bg-blue-600 text-white shadow-xs"
-                  : "text-slate-400 hover:text-white"
-              }`}
-              title="Tampilkan semua halaman berurutan ke bawah"
-            >
-              <Layers className="w-3.5 h-3.5" /> Semua Halaman
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("single")}
-              className={`px-2.5 py-1 rounded-md text-[11px] font-medium flex items-center gap-1.5 transition-colors ${
-                viewMode === "single"
-                  ? "bg-blue-600 text-white shadow-xs"
-                  : "text-slate-400 hover:text-white"
-              }`}
-              title="Tampilkan satu per satu per halaman"
-            >
-              <File className="w-3.5 h-3.5" /> Per Halaman
-            </button>
-          </div>
-
+        {/* Page Selector & Zoom Controls */}
+        <div className="flex items-center gap-2.5">
           {/* Quick Page Jump Dropdown */}
           {totalPages > 1 && (
-            <div className="flex items-center gap-1 bg-slate-900/80 px-2 py-1 rounded-lg border border-slate-700 text-[11px]">
+            <div className="flex items-center gap-1.5 bg-slate-900/80 px-2.5 py-1 rounded-lg border border-slate-700 text-[11px]">
               <span className="text-slate-400">Hal:</span>
               <select
                 value={pageNum}
@@ -300,46 +227,24 @@ export default function PdfCanvasViewer({ url, fullHeight = false }: PdfCanvasVi
             </div>
           )}
 
-          {/* Per Page Prev/Next Controls (hanya saat mode 'single') */}
-          {viewMode === "single" && (
-            <div className="flex items-center border border-slate-700 rounded-lg overflow-hidden bg-slate-900/80">
-              <button
-                type="button"
-                onClick={() => setPageNum((p) => Math.max(1, p - 1))}
-                disabled={pageNum <= 1}
-                className="p-1.5 hover:bg-slate-700 disabled:opacity-30 transition-colors"
-                title="Halaman Sebelumnya"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <span className="px-2 font-mono font-bold text-[11px] text-slate-200">
-                {pageNum} / {totalPages}
-              </span>
-              <button
-                type="button"
-                onClick={() => setPageNum((p) => Math.min(totalPages, p + 1))}
-                disabled={pageNum >= totalPages}
-                className="p-1.5 hover:bg-slate-700 disabled:opacity-30 transition-colors"
-                title="Halaman Selanjutnya"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-
-          {/* Zoom Controls */}
+          {/* Zoom Controls (Default 100%) */}
           <div className="flex items-center border border-slate-700 rounded-lg overflow-hidden bg-slate-900/80">
             <button
               type="button"
-              onClick={() => setScale((s) => Math.max(0.6, s - 0.15))}
+              onClick={() => setScale((s) => Math.max(0.5, s - 0.15))}
               className="p-1.5 hover:bg-slate-700 transition-colors"
               title="Perkecil Zoom"
             >
               <ZoomOut className="w-4 h-4" />
             </button>
-            <span className="px-2 font-mono text-[11px] text-slate-300 min-w-[42px] text-center">
+            <button
+              type="button"
+              onClick={() => setScale(1.0)}
+              className="px-2.5 py-1 font-mono text-[11px] text-slate-300 min-w-[46px] text-center hover:bg-slate-800 transition-colors cursor-pointer"
+              title="Klik untuk reset zoom ke 100%"
+            >
               {Math.round(scale * 100)}%
-            </span>
+            </button>
             <button
               type="button"
               onClick={() => setScale((s) => Math.min(2.5, s + 0.15))}
@@ -348,19 +253,11 @@ export default function PdfCanvasViewer({ url, fullHeight = false }: PdfCanvasVi
             >
               <ZoomIn className="w-4 h-4" />
             </button>
-            <button
-              type="button"
-              onClick={() => setScale(1.0)}
-              className="px-2 py-1 border-l border-slate-700 hover:bg-slate-700 transition-colors text-[10px] text-slate-300"
-              title="Atur ke 100%"
-            >
-              100%
-            </button>
           </div>
         </div>
       </div>
 
-      {/* Canvas Paper Area */}
+      {/* Canvas Paper Area - Tampilan Semua Halaman secara Berurutan */}
       <div
         className={`p-4 sm:p-6 bg-slate-950/95 overflow-auto flex flex-col items-center ${
           fullHeight ? "min-h-[750px] max-h-[88vh]" : "min-h-[450px] max-h-[700px]"
@@ -383,27 +280,15 @@ export default function PdfCanvasViewer({ url, fullHeight = false }: PdfCanvasVi
 
         {!loading && !error && pdfDoc && (
           <div className="w-full flex flex-col items-center">
-            {viewMode === "scroll" ? (
-              // Mode Gulir: Render semua halaman secara kontinu
-              pageNumbers.map((p) => (
-                <PdfPageCanvas
-                  key={p}
-                  pageNumber={p}
-                  pdfDoc={pdfDoc}
-                  scale={scale}
-                  totalPages={totalPages}
-                />
-              ))
-            ) : (
-              // Mode Per Halaman: Render hanya halaman terpilih
+            {pageNumbers.map((p) => (
               <PdfPageCanvas
-                key={pageNum}
-                pageNumber={pageNum}
+                key={p}
+                pageNumber={p}
                 pdfDoc={pdfDoc}
                 scale={scale}
                 totalPages={totalPages}
               />
-            )}
+            ))}
           </div>
         )}
       </div>

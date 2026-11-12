@@ -14,6 +14,7 @@ import LiveRiskCard from "@/components/dashboard/LiveRiskCard";
 import { calculatePolygonArea, parseCoordinateText, formatArea } from "@/lib/geoUtils";
 import { compressImage } from "@/lib/imageCompressor";
 import { serializeFotoList } from "@/lib/photoUtils";
+import { generatePdfWebPreview } from "@/lib/pdfOptimizer";
 import { DEMO_MODE, FORMS_UNDER_DEVELOPMENT } from "@/lib/demoConfig";
 import FasePlaceholder from "@/components/dashboard/FasePlaceholder";
 
@@ -156,6 +157,18 @@ export default function NewTanahPage() {
     try {
       const data = new FormData();
       data.append("file", file);
+
+      // Jika berkas adalah PDF, buat versi pratinjau cepat web secara otomatis di background
+      if (file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf")) {
+        try {
+          const previewBlob = await generatePdfWebPreview(file);
+          if (previewBlob) {
+            data.append("previewFile", previewBlob, "preview.pdf");
+          }
+        } catch (previewErr) {
+          console.warn("Gagal membuat pratinjau cepat:", previewErr);
+        }
+      }
 
       const res = await fetch("/api/upload", {
         method: "POST",

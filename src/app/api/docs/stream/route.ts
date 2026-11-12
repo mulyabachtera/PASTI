@@ -112,8 +112,23 @@ export async function GET(request: NextRequest) {
         );
       }
 
+      // Prioritaskan file pratinjau cepat web (_preview.pdf) jika tersedia
+      const forceOriginal = searchParams.get("original") === "true";
+      let fileToRead = fullPath;
+
+      if (!forceOriginal && clean.toLowerCase().endsWith(".pdf") && !clean.toLowerCase().endsWith("_preview.pdf")) {
+        const previewCandidate = fullPath.replace(/\.pdf$/i, "_preview.pdf");
+        try {
+          await fs.access(previewCandidate);
+          fileToRead = previewCandidate;
+        } catch {
+          // File preview belum tersedia, gunakan file asli
+          fileToRead = fullPath;
+        }
+      }
+
       try {
-        buffer = await fs.readFile(fullPath);
+        buffer = await fs.readFile(/*turbopackIgnore: true*/ fileToRead);
       } catch {
         return NextResponse.json(
           { success: false, error: "Dokumen tidak ditemukan pada penyimpanan server." },
