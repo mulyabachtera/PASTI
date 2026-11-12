@@ -11,6 +11,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import LiveRiskCard from "@/components/dashboard/LiveRiskCard";
 import { calculatePolygonArea, parseCoordinateText, formatArea } from "@/lib/geoUtils";
+import { compressImage } from "@/lib/imageCompressor";
 
 const FormMapComponent = dynamic(() => import("../../new/FormMapComponent"), { ssr: false });
 
@@ -148,8 +149,13 @@ export default function EditTanahForm({ tanah }: { tanah: any }) {
     else setIsUploadingFoto(true);
 
     try {
+      let fileToUpload = file;
+      if (!isDoc && file.type.startsWith('image/')) {
+        fileToUpload = await compressImage(file);
+      }
+
       const data = new FormData();
-      data.append("file", file);
+      data.append("file", fileToUpload);
 
       const res = await fetch("/api/upload", {
         method: "POST",
