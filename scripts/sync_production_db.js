@@ -361,7 +361,47 @@ async function syncAll() {
   }
 
   console.log(`[Sertifikat] Selesai: ${certUpdatedCount} aset telah ditautkan dengan dokumen sertifikat fisik.`);
-  return { createdCount, updatedCount, certUpdatedCount };
+
+  console.log('\n=== [3/3] MENERAPKAN 13 POLIGON SPASIAL ASLI KE DATABASE ===');
+  const polyPath = path.join(scriptsDir, 'mapped_17_polygons.json');
+  let polygonAppliedCount = 0;
+  if (fs.existsSync(polyPath)) {
+    const polygons = JSON.parse(fs.readFileSync(polyPath, 'utf8'));
+    for (const poly of polygons) {
+      const geojsonStr = JSON.stringify(poly.geojson);
+      const assetName = poly.matched_master_asset;
+      const certNo = poly.no_surat;
+
+      let targetAsset = null;
+      if (assetName) {
+        targetAsset = await prisma.tanah.findFirst({
+          where: { namaBarang: assetName }
+        });
+      }
+      if (!targetAsset && certNo && certNo !== '-' && certNo !== 'None' && certNo.length > 5) {
+        targetAsset = await prisma.tanah.findFirst({
+          where: { noSertifikat: { contains: certNo } }
+        });
+      }
+
+      if (targetAsset) {
+        try {
+          await prisma.$executeRaw`
+            UPDATE "tanah"
+            SET "koordinatPolygon" = ST_SetSRID(ST_GeomFromGeoJSON(${geojsonStr}), 4326),
+                "updatedAt" = NOW()
+            WHERE id = ${targetAsset.id}
+          `;
+          polygonAppliedCount++;
+        } catch (e) {
+          console.error(`Gagal menerapkan poligon untuk ${targetAsset.namaBarang}:`, e.message);
+        }
+      }
+    }
+    console.log(`[Poligon Spasial] Selesai: ${polygonAppliedCount} aset berhasil dipetakan poligon aslinya.`);
+  }
+
+  return { createdCount, updatedCount, certUpdatedCount, polygonAppliedCount };
 }
 
 if (require.main === module) {

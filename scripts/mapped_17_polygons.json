@@ -1,0 +1,1151 @@
+[
+  {
+    "polygon_index": 1,
+    "pengguna": "BPKK",
+    "nama_barang": "Tanah Bangunan Kantor Pemerintah",
+    "no_surat": "01.09.02.09.4.00009",
+    "alamat": "Jl. Lembaga, Kp. Blang Kolak II, Kec. Bebesen,",
+    "luas_excel": "12064.67",
+    "luas_calculated_m2": 12138.26,
+    "points_count": 10,
+    "matched_master_asset": "Tanah Bangunan Kantor Pemerintah / BPKK",
+    "matched_master_id_tanah": "120111043200000000000019901310101040010000001",
+    "matched_master_row": 5,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.841784,
+            4.625193
+          ],
+          [
+            96.8410446,
+            4.6249763
+          ],
+          [
+            96.8409422,
+            4.6253504
+          ],
+          [
+            96.8409209,
+            4.625376
+          ],
+          [
+            96.8406921,
+            4.625938
+          ],
+          [
+            96.8413995,
+            4.6261516
+          ],
+          [
+            96.8414263,
+            4.6259946
+          ],
+          [
+            96.8418591,
+            4.6261075
+          ],
+          [
+            96.8419042,
+            4.6254267
+          ],
+          [
+            96.841784,
+            4.625193
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 2,
+    "pengguna": "Dinas Sosial/ Budi Luhur",
+    "nama_barang": "Tanah dan Bangunan",
+    "no_surat": "01.09.02.07.2.00008",
+    "alamat": "Jl. Lebe Kader, Kp. Blang Kolak I, Kec. Bebesen",
+    "luas_excel": "8671.59",
+    "luas_calculated_m2": 8723.22,
+    "points_count": 13,
+    "matched_master_asset": "Tanah Bangunan Perumahan/Gedung Tempat Tinggal Lain-Lain / Tanah Budi luhur",
+    "matched_master_id_tanah": "120111041000000000000020091310101019990000001",
+    "matched_master_row": 10,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8432295,
+            4.627885
+          ],
+          [
+            96.8428112,
+            4.6283961
+          ],
+          [
+            96.8428526,
+            4.628476
+          ],
+          [
+            96.8428812,
+            4.628566
+          ],
+          [
+            96.842944,
+            4.6287373
+          ],
+          [
+            96.8429925,
+            4.6288872
+          ],
+          [
+            96.8430511,
+            4.6290214
+          ],
+          [
+            96.843131,
+            4.6291513
+          ],
+          [
+            96.8432252,
+            4.6292541
+          ],
+          [
+            96.8434437,
+            4.6289729
+          ],
+          [
+            96.8434308,
+            4.6289043
+          ],
+          [
+            96.8438212,
+            4.6284569
+          ],
+          [
+            96.8432295,
+            4.627885
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 3,
+    "pengguna": "Sekdakab. Aceh Tengah",
+    "nama_barang": "Tanah dan Bangunan",
+    "no_surat": "01.09.01.10.4.00037",
+    "alamat": "Jalan Commodore Yos Sudarso No. 1 Takengon",
+    "luas_excel": "22793.37",
+    "luas_calculated_m2": 22930.09,
+    "points_count": 16,
+    "matched_master_asset": "Tanah Bangunan Kantor Pemerintah / Kantor Bupati",
+    "matched_master_id_tanah": "120111043000000000000020051310101040010000001",
+    "matched_master_row": 7,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8448395,
+            4.6222606
+          ],
+          [
+            96.8468168,
+            4.6219537
+          ],
+          [
+            96.8470733,
+            4.6215863
+          ],
+          [
+            96.8458578,
+            4.6210589
+          ],
+          [
+            96.8450215,
+            4.6213969
+          ],
+          [
+            96.8448252,
+            4.621529
+          ],
+          [
+            96.8446574,
+            4.6217003
+          ],
+          [
+            96.8446005,
+            4.6217715
+          ],
+          [
+            96.8445725,
+            4.6218251
+          ],
+          [
+            96.844574,
+            4.6218646
+          ],
+          [
+            96.8445753,
+            4.6219002
+          ],
+          [
+            96.8446039,
+            4.6220322
+          ],
+          [
+            96.8446396,
+            4.6221143
+          ],
+          [
+            96.8446967,
+            4.6221893
+          ],
+          [
+            96.8447931,
+            4.6222606
+          ],
+          [
+            96.8448395,
+            4.6222606
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 4,
+    "pengguna": "Dinas Pendidikan/ Museum",
+    "nama_barang": "Tanah Untuk Bangunan Bersejarah Lain - Lain",
+    "no_surat": "01.09.02.07.4.00006",
+    "alamat": "Jl. Mess Time Ruang, Kp Kemili, Kec. Bebesen",
+    "luas_excel": "",
+    "luas_calculated_m2": 7837.42,
+    "points_count": 18,
+    "matched_master_asset": "Tanah Untuk Bangunan Bersejarah Lain - Lain / UPTD Museum (jalan mess time ruang)",
+    "matched_master_id_tanah": "120111042500000000000020021310103119990000001",
+    "matched_master_row": 9,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8478723,
+            4.6268449
+          ],
+          [
+            96.847789,
+            4.6268663
+          ],
+          [
+            96.8476796,
+            4.6269139
+          ],
+          [
+            96.8475535,
+            4.6270923
+          ],
+          [
+            96.8475392,
+            4.6271304
+          ],
+          [
+            96.8474607,
+            4.6273612
+          ],
+          [
+            96.8474059,
+            4.6275682
+          ],
+          [
+            96.8474107,
+            4.6278633
+          ],
+          [
+            96.8477343,
+            4.6278776
+          ],
+          [
+            96.8480032,
+            4.6278562
+          ],
+          [
+            96.8483625,
+            4.6277348
+          ],
+          [
+            96.848284,
+            4.6275135
+          ],
+          [
+            96.8480936,
+            4.6273612
+          ],
+          [
+            96.8480651,
+            4.6273041
+          ],
+          [
+            96.8480103,
+            4.6271352
+          ],
+          [
+            96.8479651,
+            4.6269924
+          ],
+          [
+            96.8479318,
+            4.6268901
+          ],
+          [
+            96.8478723,
+            4.6268449
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 5,
+    "pengguna": "Dinas Pemuda dan Olahraga",
+    "nama_barang": "Tanah Lapangan Olahraga Lain-lain",
+    "no_surat": "01.09.02.12.4.00005",
+    "alamat": "Jl. Yos Sudarso, Kp. Blang Kolak 1, Kec. Bebesen",
+    "luas_excel": "",
+    "luas_calculated_m2": 52866.72,
+    "points_count": 38,
+    "matched_master_asset": "Tanah Lapangan Olahraga Lain-lain / Lapangan Musara Alun",
+    "matched_master_id_tanah": "120111043000000000000019931310103019990000001",
+    "matched_master_row": 6,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8439493,
+            4.6228268
+          ],
+          [
+            96.8439284,
+            4.6226212
+          ],
+          [
+            96.8423351,
+            4.6227773
+          ],
+          [
+            96.8423389,
+            4.622962
+          ],
+          [
+            96.8422799,
+            4.622981
+          ],
+          [
+            96.8421638,
+            4.6230495
+          ],
+          [
+            96.8420857,
+            4.6231352
+          ],
+          [
+            96.8419487,
+            4.6233103
+          ],
+          [
+            96.8418516,
+            4.6234797
+          ],
+          [
+            96.8418478,
+            4.6237672
+          ],
+          [
+            96.8418535,
+            4.6239233
+          ],
+          [
+            96.8418306,
+            4.6240013
+          ],
+          [
+            96.8418535,
+            4.6241479
+          ],
+          [
+            96.8418934,
+            4.6243059
+          ],
+          [
+            96.8418801,
+            4.6244125
+          ],
+          [
+            96.8419068,
+            4.6244144
+          ],
+          [
+            96.8423693,
+            4.6245
+          ],
+          [
+            96.8429252,
+            4.6245381
+          ],
+          [
+            96.8431574,
+            4.6245476
+          ],
+          [
+            96.8433725,
+            4.6245305
+          ],
+          [
+            96.8435743,
+            4.6244867
+          ],
+          [
+            96.8437418,
+            4.624462
+          ],
+          [
+            96.8438332,
+            4.6244448
+          ],
+          [
+            96.8438713,
+            4.624403
+          ],
+          [
+            96.8438903,
+            4.6243268
+          ],
+          [
+            96.8439303,
+            4.6242412
+          ],
+          [
+            96.8439702,
+            4.6242031
+          ],
+          [
+            96.8440312,
+            4.6241802
+          ],
+          [
+            96.844132,
+            4.6241593
+          ],
+          [
+            96.844212,
+            4.6241269
+          ],
+          [
+            96.8443148,
+            4.6240698
+          ],
+          [
+            96.84437,
+            4.6240203
+          ],
+          [
+            96.8444328,
+            4.6239023
+          ],
+          [
+            96.8445051,
+            4.6237082
+          ],
+          [
+            96.844547,
+            4.6233884
+          ],
+          [
+            96.8445775,
+            4.6230895
+          ],
+          [
+            96.8444918,
+            4.6227411
+          ],
+          [
+            96.8439493,
+            4.6228268
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 6,
+    "pengguna": "",
+    "nama_barang": "",
+    "no_surat": "",
+    "alamat": "",
+    "luas_excel": "",
+    "luas_calculated_m2": 2621.62,
+    "points_count": 9,
+    "matched_master_asset": null,
+    "matched_master_id_tanah": null,
+    "matched_master_row": null,
+    "extra_notes": "Gedung Setdakab / Kompleks Kantor Bupati (di samping Kantor Bupati)",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8447298,
+            4.622465
+          ],
+          [
+            96.8447555,
+            4.6226894
+          ],
+          [
+            96.8444918,
+            4.6227411
+          ],
+          [
+            96.8445689,
+            4.6230547
+          ],
+          [
+            96.8449754,
+            4.6229887
+          ],
+          [
+            96.8449321,
+            4.6226554
+          ],
+          [
+            96.8450748,
+            4.6226345
+          ],
+          [
+            96.8450452,
+            4.6224188
+          ],
+          [
+            96.8447298,
+            4.622465
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 7,
+    "pengguna": "Pendopo Bupati",
+    "nama_barang": "Tanah Bangunan Rumah Negara Golongan I",
+    "no_surat": "01.09.01.10.4.00038",
+    "alamat": "Jl. Lebe Kader No. 1, Kp. Merah Mersah, Kec. Lut T",
+    "luas_excel": "",
+    "luas_calculated_m2": 8827.01,
+    "points_count": 10,
+    "matched_master_asset": "Tanah Bangunan Rumah Negara Golongan I / Pendopo",
+    "matched_master_id_tanah": "120111043000000000000019941310101010010000001",
+    "matched_master_row": 8,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8476274,
+            4.6193872
+          ],
+          [
+            96.8471527,
+            4.6200796
+          ],
+          [
+            96.847788,
+            4.6204972
+          ],
+          [
+            96.8478213,
+            4.6204722
+          ],
+          [
+            96.8480795,
+            4.6200963
+          ],
+          [
+            96.8483127,
+            4.619712
+          ],
+          [
+            96.8483162,
+            4.6196691
+          ],
+          [
+            96.848277,
+            4.6196192
+          ],
+          [
+            96.8482449,
+            4.6196013
+          ],
+          [
+            96.8476274,
+            4.6193872
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 8,
+    "pengguna": "",
+    "nama_barang": "",
+    "no_surat": "",
+    "alamat": "",
+    "luas_excel": "5632.04",
+    "luas_calculated_m2": 5666.1,
+    "points_count": 7,
+    "matched_master_asset": null,
+    "matched_master_id_tanah": null,
+    "matched_master_row": null,
+    "extra_notes": "Kompleks Pendopo Bupati / Rumah Dinas (Luas tercatat 5632.04 m²)",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8483513,
+            4.6200924
+          ],
+          [
+            96.8483929,
+            4.6205534
+          ],
+          [
+            96.848607,
+            4.6205326
+          ],
+          [
+            96.8486546,
+            4.620839
+          ],
+          [
+            96.8491246,
+            4.6207676
+          ],
+          [
+            96.8489937,
+            4.6200032
+          ],
+          [
+            96.8483513,
+            4.6200924
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 9,
+    "pengguna": "Dinas Perdagangan",
+    "nama_barang": "Tanah Bangunan Pasar",
+    "no_surat": "01.09.01.13.4.00007",
+    "alamat": "Jl. Bale Atu, Kp. Bale Atu, Kec. Lut Tawar",
+    "luas_excel": "",
+    "luas_calculated_m2": 4584.15,
+    "points_count": 5,
+    "matched_master_asset": "Tanah Bangunan Pasar / Tanah bangunan Mall bale atu",
+    "matched_master_id_tanah": "120111042800000000000019821310101020010000001",
+    "matched_master_row": 15,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8498955,
+            4.6222845
+          ],
+          [
+            96.8502554,
+            4.622222
+          ],
+          [
+            96.8500353,
+            4.6211988
+          ],
+          [
+            96.8496962,
+            4.6212553
+          ],
+          [
+            96.8498955,
+            4.6222845
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 10,
+    "pengguna": "Dinas Perhubungan",
+    "nama_barang": "Tanah Bangunan Terminal Darat",
+    "no_surat": "01.09.02.07.4.00005",
+    "alamat": "Jl. Sengeda, Takengon Timur, Kec. Bebesen",
+    "luas_excel": "",
+    "luas_calculated_m2": 6543.48,
+    "points_count": 5,
+    "matched_master_asset": "Tanah Bangunan Terminal Darat / Tanah terminal (perhubungan)",
+    "matched_master_id_tanah": "120111041700000000000019981310101020070000001",
+    "matched_master_row": 17,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8510418,
+            4.6242338
+          ],
+          [
+            96.8503339,
+            4.6243141
+          ],
+          [
+            96.8504529,
+            4.6250399
+          ],
+          [
+            96.8511876,
+            4.6249447
+          ],
+          [
+            96.8510418,
+            4.6242338
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 11,
+    "pengguna": "Dinas Parawisata",
+    "nama_barang": "",
+    "no_surat": "",
+    "alamat": "Kp. Hakim, Bale Bujang",
+    "luas_excel": "9460.89",
+    "luas_calculated_m2": 9517.9,
+    "points_count": 5,
+    "matched_master_asset": "Tanah Lukup Penalam (eks wisata)",
+    "matched_master_id_tanah": null,
+    "matched_master_row": 44,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8599018,
+            4.6138836
+          ],
+          [
+            96.8591344,
+            4.6141037
+          ],
+          [
+            96.8592355,
+            4.6150406
+          ],
+          [
+            96.8599731,
+            4.6149603
+          ],
+          [
+            96.8599018,
+            4.6138836
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 12,
+    "pengguna": "Sekretariat Daerah",
+    "nama_barang": "Tanah Untuk Bangunan Industri Lainnya",
+    "no_surat": "6720958",
+    "alamat": "Ds. Simpang Kelaping, Kec. Pegasing, Kab. Aceh Ten",
+    "luas_excel": "",
+    "luas_calculated_m2": 1226346.76,
+    "points_count": 24,
+    "matched_master_asset": "Tanah Untuk Bangunan Industri Lainnya / Hak Pakai No. 1",
+    "matched_master_id_tanah": "120111043000000000000020231310101039990000001",
+    "matched_master_row": 11,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8164589,
+            4.6027883
+          ],
+          [
+            96.8164328,
+            4.6025216
+          ],
+          [
+            96.8133955,
+            4.6026168
+          ],
+          [
+            96.8133734,
+            4.6016442
+          ],
+          [
+            96.812666,
+            4.595659
+          ],
+          [
+            96.812251,
+            4.5927835
+          ],
+          [
+            96.8165369,
+            4.592783
+          ],
+          [
+            96.8165649,
+            4.5918938
+          ],
+          [
+            96.8149125,
+            4.5922714
+          ],
+          [
+            96.8130861,
+            4.5840381
+          ],
+          [
+            96.8074388,
+            4.5856442
+          ],
+          [
+            96.8111503,
+            4.5924886
+          ],
+          [
+            96.8097972,
+            4.5931578
+          ],
+          [
+            96.8073252,
+            4.5889503
+          ],
+          [
+            96.8061235,
+            4.5860245
+          ],
+          [
+            96.8067444,
+            4.5939077
+          ],
+          [
+            96.8099537,
+            4.6017278
+          ],
+          [
+            96.8092186,
+            4.602375
+          ],
+          [
+            96.8096759,
+            4.6032957
+          ],
+          [
+            96.8109358,
+            4.6031426
+          ],
+          [
+            96.8118642,
+            4.6039048
+          ],
+          [
+            96.8133061,
+            4.6037128
+          ],
+          [
+            96.813369,
+            4.6029118
+          ],
+          [
+            96.8164589,
+            4.6027883
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 13,
+    "pengguna": "DPMK",
+    "nama_barang": "Tanah Bangunan Kantor Pemerintah",
+    "no_surat": "01.09.02.14.4.00004",
+    "alamat": "Jl. Lebe kader, Kp. Simpang Empat, Kec. Bebesen",
+    "luas_excel": "",
+    "luas_calculated_m2": 1494.43,
+    "points_count": 6,
+    "matched_master_asset": "Tanah Bangunan Kantor Pemerintah / Kantor DPMK (bekas Dekranasda)",
+    "matched_master_id_tanah": "120111041500000000000019811310101040010000001",
+    "matched_master_row": 14,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8425577,
+            4.6365545
+          ],
+          [
+            96.8422569,
+            4.6365545
+          ],
+          [
+            96.8421732,
+            4.6365373
+          ],
+          [
+            96.8420589,
+            4.6368305
+          ],
+          [
+            96.8425596,
+            4.636819
+          ],
+          [
+            96.8425577,
+            4.6365545
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 14,
+    "pengguna": "Dinas Kesehatan",
+    "nama_barang": "Tanah Bangunan Kantor Pemerintah",
+    "no_surat": "01.09.01.02.4.00011",
+    "alamat": "Kec. Kebayakan Desa/Kelurahan Gunung Bukit, Kec. K",
+    "luas_excel": "3593.34",
+    "luas_calculated_m2": 3614.91,
+    "points_count": 9,
+    "matched_master_asset": "Tanah Bangunan Kantor Pemerintah / Tanah & bangunan Dinas Kesehatan",
+    "matched_master_id_tanah": "120111040400000000000020011310101040010000001",
+    "matched_master_row": 19,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8516071,
+            4.6373666
+          ],
+          [
+            96.8512115,
+            4.6374677
+          ],
+          [
+            96.8512264,
+            4.6374945
+          ],
+          [
+            96.8509973,
+            4.6375837
+          ],
+          [
+            96.8510003,
+            4.6376105
+          ],
+          [
+            96.8509081,
+            4.6376283
+          ],
+          [
+            96.8509884,
+            4.6379555
+          ],
+          [
+            96.8517052,
+            4.63778
+          ],
+          [
+            96.8516071,
+            4.6373666
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 15,
+    "pengguna": "",
+    "nama_barang": "",
+    "no_surat": "",
+    "alamat": "",
+    "luas_excel": "",
+    "luas_calculated_m2": 1150.67,
+    "points_count": 9,
+    "matched_master_asset": null,
+    "matched_master_id_tanah": null,
+    "matched_master_row": null,
+    "extra_notes": "Persil Kebayakan / RSU Datu Beru (Luas 1150.67 m²)",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.850389,
+            4.6383942
+          ],
+          [
+            96.8501435,
+            4.6382686
+          ],
+          [
+            96.8501244,
+            4.6382857
+          ],
+          [
+            96.8500845,
+            4.6382629
+          ],
+          [
+            96.8500616,
+            4.6382952
+          ],
+          [
+            96.8500121,
+            4.6382667
+          ],
+          [
+            96.849917,
+            4.6384247
+          ],
+          [
+            96.8502653,
+            4.6386169
+          ],
+          [
+            96.850389,
+            4.6383942
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 16,
+    "pengguna": "Dinas Pendidikan (SMPN 1 Tkn)",
+    "nama_barang": "Tanah Bangunan Pendidikan Dan Latihan",
+    "no_surat": "01.09.01.10.4.00044",
+    "alamat": "Kec.Lut Tawar Desa/Kelurahan Takengon Barat, Kec.",
+    "luas_excel": "",
+    "luas_calculated_m2": 8189.41,
+    "points_count": 9,
+    "matched_master_asset": "Tanah Bangunan Pendidikan Dan Latihan / Tanah SMPN 1 Tkn",
+    "matched_master_id_tanah": "120111040100000000000020051310101040020000008",
+    "matched_master_row": 18,
+    "extra_notes": "",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8465906,
+            4.6201748
+          ],
+          [
+            96.8457554,
+            4.6198357
+          ],
+          [
+            96.8456055,
+            4.6200891
+          ],
+          [
+            96.8459089,
+            4.6202176
+          ],
+          [
+            96.8457304,
+            4.6207887
+          ],
+          [
+            96.8457911,
+            4.6208101
+          ],
+          [
+            96.8457589,
+            4.6209279
+          ],
+          [
+            96.8461658,
+            4.6211028
+          ],
+          [
+            96.8465906,
+            4.6201748
+          ]
+        ]
+      ]
+    }
+  },
+  {
+    "polygon_index": 17,
+    "pengguna": "",
+    "nama_barang": "",
+    "no_surat": "",
+    "alamat": "",
+    "luas_excel": "",
+    "luas_calculated_m2": 2332.61,
+    "points_count": 5,
+    "matched_master_asset": null,
+    "matched_master_id_tanah": null,
+    "matched_master_row": null,
+    "extra_notes": "Persil Takengon / Lut Tawar (Luas 2332.61 m²)",
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            96.8487602,
+            4.6188343
+          ],
+          [
+            96.8478608,
+            4.6181015
+          ],
+          [
+            96.8477609,
+            4.618249
+          ],
+          [
+            96.8486698,
+            4.6189533
+          ],
+          [
+            96.8487602,
+            4.6188343
+          ]
+        ]
+      ]
+    }
+  }
+]
