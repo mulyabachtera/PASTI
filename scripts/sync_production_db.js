@@ -152,13 +152,15 @@ async function syncAll() {
       });
     }
 
+    const isTerminalLama = (existing && existing.namaBarang && existing.namaBarang.includes('terminal lama bale atu')) || (namaBarang && namaBarang.includes('terminal lama bale atu'));
+
     const physicalInput = {
-      papanAset: 0,
-      batasBidang: 0,
-      pagarPengamanan: 0,
-      statusPenguasaan: 0,
-      pemanfaatan: 0,
-      statusLegalitas,
+      papanAset: isTerminalLama ? 1 : 0,
+      batasBidang: isTerminalLama ? 1 : 0,
+      pagarPengamanan: isTerminalLama ? 2 : 0,
+      statusPenguasaan: isTerminalLama ? 1 : 0,
+      pemanfaatan: isTerminalLama ? 2 : 0,
+      statusLegalitas: isTerminalLama ? 'Belum Bersertifikat' : statusLegalitas,
       nilaiPerolehan
     };
     const risk = calculateRisk(physicalInput);
@@ -171,17 +173,24 @@ async function syncAll() {
           kodeTanah,
           kodeBarang: kodeTanah,
           namaBarang,
-          pengelola,
-          luas: existing.luas || luas,
-          statusHak: existing.statusHak || statusHak,
-          noSertifikat: existing.noSertifikat || noSertifikat,
+          pengelola: isTerminalLama ? 'Dinas Perdagangan' : pengelola,
+          luas: isTerminalLama ? 5632.04 : (existing.luas || luas),
+          statusHak: isTerminalLama ? 'Tanah Pemda' : (existing.statusHak || statusHak),
+          noSertifikat: isTerminalLama ? null : (existing.noSertifikat || noSertifikat),
+          dokumenSertifikat: isTerminalLama ? null : existing.dokumenSertifikat,
+          permasalahan: isTerminalLama ? 'Belum bersertifikat (Eks terminal lama dimanfaatkan sebagai pasar petani/pedagang lokal)' : existing.permasalahan,
           nilaiPerolehan,
           asalPerolehan,
-          alamatLokasi,
-          kecamatan,
+          alamatLokasi: isTerminalLama ? 'Jl. Bale Atu, Kp. Bale Atu, Kec. Lut Tawar' : alamatLokasi,
+          kecamatan: isTerminalLama ? 'Lut Tawar' : kecamatan,
           kabKota,
           provinsi,
-          statusLegalitas: existing.statusLegalitas || statusLegalitas,
+          statusLegalitas: isTerminalLama ? 'Belum Bersertifikat' : (existing.statusLegalitas || statusLegalitas),
+          papanAset: physicalInput.papanAset,
+          batasBidang: physicalInput.batasBidang,
+          pagarPengamanan: physicalInput.pagarPengamanan,
+          statusPenguasaan: physicalInput.statusPenguasaan,
+          pemanfaatan: physicalInput.pemanfaatan,
           skorAdministrasi: risk.skorAdministrasi,
           skorLegal: risk.skorLegal,
           skorFisik: risk.skorFisik,
@@ -286,6 +295,11 @@ async function syncAll() {
       continue;
     }
 
+    if (asset.namaBarang && asset.namaBarang.includes('terminal lama bale atu')) {
+      console.warn(`[SKIP] Aset ${asset.namaBarang} berstatus Tanpa Sertifikat, lewati penautan sertifikat.`);
+      continue;
+    }
+
     const newLuas = item.luas || asset.luas;
     const newNoSertifikat = item.no_sertifikat || asset.noSertifikat;
     const newStatusHak = item.status_hak || asset.statusHak;
@@ -362,7 +376,7 @@ async function syncAll() {
 
   console.log(`[Sertifikat] Selesai: ${certUpdatedCount} aset telah ditautkan dengan dokumen sertifikat fisik.`);
 
-  console.log('\n=== [3/3] MENERAPKAN 13 POLIGON SPASIAL ASLI KE DATABASE ===');
+  console.log('\n=== [3/3] MENERAPKAN POLIGON SPASIAL HASIL UKUR KE DATABASE ===');
   const polyPath = path.join(scriptsDir, 'mapped_17_polygons.json');
   let polygonAppliedCount = 0;
   if (fs.existsSync(polyPath)) {

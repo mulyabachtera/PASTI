@@ -130,9 +130,6 @@
     "src_file": "12. terminal lama.pdf",
     "dest_base": "sertifikat_12_terminal_lama.pdf",
     "asset_filter": {
-      "name_contains": "terminal lama bale atu"
-    },
-    "secondary_filter": {
       "name_contains": "terminal (perhubungan)"
     },
     "no_sertifikat": "01.09.02.07.4.00005",
@@ -229,7 +226,7 @@
     "status_hak": "Hak Pakai",
     "status_legalitas": "Sertifikat",
     "relative_url": "/uploads/certificates/sertifikat_24_puskesmas_kebayakan.pdf",
-    "orig_size_mb": 13.0,
+    "orig_size_mb": 13,
     "preview_size_mb": 1.21
   },
   {
